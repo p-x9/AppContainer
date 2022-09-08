@@ -5,13 +5,13 @@ public class AppContainer {
     
     private let fileManager = FileManager.default
     
-    private lazy var containerUrl: URL = {
+    private lazy var containersUrl: URL = {
         fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
             .appendingPathComponent(Constants.containerFolderName)
     }()
     
     private lazy var settingsUrl: URL = {
-        containerUrl.appendingPathComponent(Constants.appContainerSettingsPlistName)
+        containersUrl.appendingPathComponent(Constants.appContainerSettingsPlistName)
     }()
     
     private lazy var settings: AppContainerSettings = {
@@ -85,7 +85,7 @@ public class AppContainer {
     public func reset() throws {
         try activate(container: .default)
         
-        try fileManager.removeItem(at: containerUrl)
+        try fileManager.removeItem(at: containersUrl)
     }
 }
 
@@ -113,7 +113,7 @@ extension AppContainer {
 
 extension AppContainer {
     private func createContainerDirectoryIfNeeded() throws {
-        try fileManager.createDirectory(at: containerUrl, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: containersUrl, withIntermediateDirectories: true)
     }
     
     private func createDefaultContainerIfNeeded() throws {
@@ -172,14 +172,14 @@ extension AppContainer {
     }
     
     private func loadContainers() throws -> [Container] {
-        guard fileManager.fileExists(atPath: containerUrl.path) else {
+        guard fileManager.fileExists(atPath: containersUrl.path) else {
             return []
         }
         
         let decoder = PropertyListDecoder()
-        let uuids = try fileManager.contentsOfDirectory(atPath: containerUrl.path)
+        let uuids = try fileManager.contentsOfDirectory(atPath: containersUrl.path)
         let containers: [Container] = uuids.compactMap { uuid in
-            let url = containerUrl.appendingPathComponent(uuid)
+            let url = containersUrl.appendingPathComponent(uuid)
             let plistUrl = url.appendingPathComponent(Constants.containerInfoPlistName)
             guard let data = try? Data(contentsOf: plistUrl) else {
                 return nil
