@@ -9,7 +9,9 @@
 import Foundation
 
 public struct Container: Codable {
+    /// container name
     var name: String?
+    /// container unique id
     let uuid: String
 }
 
@@ -18,16 +20,19 @@ extension Container {
         uuid == UUID.zero.uuidString
     }
     
+    /// Container directory url,
     public var url: URL {
         .init(fileURLWithPath: path)
     }
     
+    /// Container Directory pasth
     public var path: String {
         NSHomeDirectory() + "/Library/" + Constants.containerFolderName + "/" + uuid
     }
 }
 
 extension Container {
+    /// default ccontainer
     static let `default`: Container = {
         .init(name: "DEFAULT", uuid: UUID.zero.uuidString)
     }()

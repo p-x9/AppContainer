@@ -5,15 +5,20 @@ public class AppContainer {
     
     private let fileManager = FileManager.default
     
+    /// url of app container stashed
+    /// ~/Library/.__app_container__
     private lazy var containersUrl: URL = {
         fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
             .appendingPathComponent(Constants.containerFolderName)
     }()
     
+    /// app container settings plist path
     private lazy var settingsUrl: URL = {
         containersUrl.appendingPathComponent(Constants.appContainerSettingsPlistName)
     }()
     
+    /// app container settings
+    /// if update params, automatically update plist file
     private lazy var settings: AppContainerSettings = {
         loadAppContainerSettings() ?? .init(currentContainerUUID: UUID.zero.uuidString)
     }() {
@@ -22,6 +27,7 @@ public class AppContainer {
         }
     }
     
+    /// container list
     public var containers: [Container] {
         _containers
     }
@@ -35,15 +41,22 @@ public class AppContainer {
         try? createDefaultContainerIfNeeded()
     }
     
+    /// create new app container
+    /// - Parameter name: container name
+    /// - Returns: created container info
     @discardableResult
     public func createNewContainer(name: String) throws -> Container {
         try createNewContainer(name: name, isDefault: false)
     }
     
+    /// activate selected container
+    /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
     public func activate(container: Container) throws {
         try activateContainer(uuid: container.uuid)
     }
     
+    /// activate selected container
+    /// - Parameter uuid: container's unique id.
     public func activateContainer(uuid: String) throws {
         guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
             return
@@ -55,6 +68,7 @@ public class AppContainer {
         settings.currentContainerUUID = uuid
     }
     
+    /// Evacuate currently used container.
     public func stash() throws {
         let uuid = self.settings.currentContainerUUID
         guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
@@ -65,10 +79,15 @@ public class AppContainer {
         try moveContainerContents(src: NSHomeDirectory(), dst: container.path)
     }
     
+    /// Delete Selected container.
+    /// If an attempt is made to delete a container currently in use, make the default container active
+    /// - Parameter container: container that you want to delete. Since only the uuid of the container is considered, `deleteContainer(uuid: String)`method  can be used instead.
     public func delete(container: Container) throws {
         try deleteContainer(uuid: container.uuid)
     }
     
+    /// Delete Selected container.
+    /// - Parameter uuid: uuid of container that you want to delete.
     public func deleteContainer(uuid: String) throws {
         let container = Container(uuid: uuid)
         guard fileManager.fileExists(atPath: container.path) else {
@@ -82,6 +101,7 @@ public class AppContainer {
         try fileManager.removeItem(at: container.url)
     }
     
+    /// Clear all containers and activate the default container
     public func reset() throws {
         try activate(container: .default)
         
@@ -149,6 +169,9 @@ extension AppContainer {
         return container
     }
     
+    /// Update container information.
+    /// Save as property list.
+    /// - Parameter container: target container
     private func updateContainerInfo(for container: Container) throws {
         guard fileManager.fileExists(atPath: container.path) else {
             return
@@ -171,6 +194,9 @@ extension AppContainer {
         try containerData.write(to: plistUrl)
     }
     
+    /// load containers from app containers directory.
+    /// container info is saved as property list  in container directory's root.
+    /// - Returns: App containers
     private func loadContainers() throws -> [Container] {
         guard fileManager.fileExists(atPath: containersUrl.path) else {
             return []
@@ -190,6 +216,10 @@ extension AppContainer {
         return containers
     }
     
+    /// move container's child contents
+    /// - Parameters:
+    ///   - src: source path.
+    ///   - dst: destination path.
     private func moveContainerContents(src: String, dst: String) throws {
         try Container.Directories.allNames.forEach { name in
             let source = src + "/" + name
@@ -201,6 +231,8 @@ extension AppContainer {
         }
     }
     
+    /// Delete container directory contents.
+    /// - Parameter container: target container
     private func cleanContainerDirectory(container: Container) throws {
         try Container.Directories.allNames.forEach { name in
             try self.fileManager.removeItemIfExisted(at: container.url.appendingPathComponent(name))
