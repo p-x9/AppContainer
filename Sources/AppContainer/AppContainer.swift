@@ -5,11 +5,15 @@ public class AppContainer {
     
     private let fileManager = FileManager.default
     
+    /// home directory url
+    private lazy var homeDirectoryUrl: URL = {
+        fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+    }()
+    
     /// url of app container stashed
     /// ~/Library/.__app_container__
     private lazy var containersUrl: URL = {
-        fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(Constants.containerFolderName)
+        homeDirectoryUrl.appendingPathComponent(Constants.containerFolderName)
     }()
     
     /// app container settings plist path
@@ -27,6 +31,12 @@ public class AppContainer {
         }
     }
     
+    /// Active Container.
+    /// The original content now exists in the home directory.
+    public var activeContainer: Container? {
+        _containers.first(where: { $0.uuid == settings.currentContainerUUID })
+    }
+    
     /// container list
     public var containers: [Container] {
         _containers
@@ -36,6 +46,10 @@ public class AppContainer {
         (try? loadContainers()) ?? []
     }()
 
+    private var activeContainerIndex: Int? {
+        _containers.firstIndex(where: { $0.uuid == settings.currentContainerUUID })
+    }
+    
     private init() {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
@@ -63,20 +77,19 @@ public class AppContainer {
         }
         
         try stash()
-        try moveContainerContents(src: container.path, dst: NSHomeDirectory())
+        try moveContainerContents(src: container.path, dst: homeDirectoryUrl.path)
         
         settings.currentContainerUUID = uuid
     }
     
     /// Evacuate currently used container.
     public func stash() throws {
-        let uuid = self.settings.currentContainerUUID
-        guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
+        guard let container = self.activeContainer else {
             return
         }
         
         try cleanContainerDirectory(container: container)
-        try moveContainerContents(src: NSHomeDirectory(), dst: container.path)
+        try moveContainerContents(src: homeDirectoryUrl.path, dst: container.path)
     }
     
     /// Delete Selected container.
@@ -99,6 +112,25 @@ public class AppContainer {
         }
         
         try fileManager.removeItem(at: container.url)
+    }
+    
+    /// Clear contents in selected container
+    /// - Parameter container: target container.  Since only the uuid of the container is considered, `cleanContainer(uuid: String)`method  can be used instead.
+    public func clean(container: Container) throws {
+        try self.cleanContainer(uuid: container.uuid)
+    }
+    
+    /// Clear contents in selected container
+    /// - Parameter uuid: uuid of container that you want to clean.
+    public func cleanContainer(uuid: String) throws {
+        let container = Container(uuid: uuid)
+        guard fileManager.fileExists(atPath: container.path) else {
+            return
+        }
+        
+        try Container.Directories.allNames.forEach { name in
+            try self.fileManager.removeChildContents(at: container.url.appendingPathComponent(name))
+        }
     }
     
     /// Clear all containers and activate the default container
@@ -143,7 +175,7 @@ extension AppContainer {
         
         let container = try createNewContainer(name: "DEFAULT", isDefault: true)
         
-        try moveContainerContents(src: NSHomeDirectory(), dst: container.path)
+        try moveContainerContents(src: homeDirectoryUrl.path, dst: container.path)
     }
     
     @discardableResult
