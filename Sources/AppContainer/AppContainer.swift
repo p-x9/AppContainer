@@ -56,6 +56,21 @@ public class AppContainer {
     }
     
     private init() {
+        setup()
+    }
+    
+    /// initialize with app group identifier.
+    /// - Parameter groupIdentifier: app group identifier.
+    public init(groupIdentifier: String) {
+        guard let homeDirectoryUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupIdentifier) else {
+            fatalError("Invalid app group identifier")
+        }
+        
+        self.homeDirectoryUrl = homeDirectoryUrl
+        setup()
+    }
+    
+    private func setup() {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
     }
