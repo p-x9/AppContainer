@@ -20,14 +20,21 @@ extension Container {
         uuid == UUID.zero.uuidString
     }
     
-    /// Container directory url,
-    public var url: URL {
-        .init(fileURLWithPath: path)
+    // container relative path
+    private var relativePath: String {
+        "Library/" + Constants.containerFolderName + "/" + uuid
     }
     
-    /// Container Directory pasth
-    public var path: String {
-        NSHomeDirectory() + "/Library/" + Constants.containerFolderName + "/" + uuid
+    /// Container Directory url
+    /// - Parameter homeUrl: home directory url.
+    public func url(_ homeUrl: URL) -> URL {
+        homeUrl.appendingPathComponent(relativePath)
+    }
+    
+    /// Container Directory path
+    /// - Parameter homePath: home directory path.
+    public func path(_ homePath: String) -> String {
+        homePath + "/" + relativePath
     }
 }
 
