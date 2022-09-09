@@ -1,7 +1,7 @@
 import Foundation
 
 public class AppContainer {
-    public static let shared = AppContainer()
+    public static let standard = AppContainer()
     
     private let fileManager = FileManager.default
     
