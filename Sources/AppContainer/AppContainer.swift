@@ -124,7 +124,7 @@ public class AppContainer {
     public func deleteContainer(uuid: String) throws {
         let container = Container(uuid: uuid)
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
-            return
+            throw AppContainerError.containerDirectoryNotFound
         }
         
         if settings.currentContainerUUID == uuid {
@@ -145,7 +145,7 @@ public class AppContainer {
     public func cleanContainer(uuid: String) throws {
         let container = Container(uuid: uuid)
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
-            return
+            throw AppContainerError.containerDirectoryNotFound
         }
         
         try Container.Directories.allNames.forEach { name in
