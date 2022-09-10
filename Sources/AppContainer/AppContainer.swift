@@ -86,7 +86,10 @@ public class AppContainer {
     /// activate selected container
     /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
     public func activate(container: Container) throws {
-        try activateContainer(uuid: container.uuid)
+        try stash()
+        try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
+        
+        settings.currentContainerUUID = container.uuid
     }
     
     /// activate selected container
@@ -96,10 +99,7 @@ public class AppContainer {
             return
         }
         
-        try stash()
-        try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
-        
-        settings.currentContainerUUID = uuid
+        try self.activate(container: container)
     }
     
     /// Evacuate currently used container.
@@ -116,34 +116,30 @@ public class AppContainer {
     /// If an attempt is made to delete a container currently in use, make the default container active
     /// - Parameter container: container that you want to delete. Since only the uuid of the container is considered, `deleteContainer(uuid: String)`method  can be used instead.
     public func delete(container: Container) throws {
-        try deleteContainer(uuid: container.uuid)
-    }
-    
-    /// Delete Selected container.
-    /// - Parameter uuid: uuid of container that you want to delete.
-    public func deleteContainer(uuid: String) throws {
-        let container = Container(uuid: uuid)
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             throw AppContainerError.containerDirectoryNotFound
         }
         
-        if settings.currentContainerUUID == uuid {
+        if settings.currentContainerUUID == container.uuid {
             try activate(container: .default)
         }
         
         try fileManager.removeItem(at: container.url(homeDirectoryUrl))
     }
     
-    /// Clear contents in selected container
-    /// - Parameter container: target container.  Since only the uuid of the container is considered, `cleanContainer(uuid: String)`method  can be used instead.
-    public func clean(container: Container) throws {
-        try self.cleanContainer(uuid: container.uuid)
+    /// Delete Selected container.
+    /// - Parameter uuid: uuid of container that you want to delete.
+    public func deleteContainer(uuid: String) throws {
+        guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
+            return
+        }
+        
+        try self.delete(container: container)
     }
     
     /// Clear contents in selected container
-    /// - Parameter uuid: uuid of container that you want to clean.
-    public func cleanContainer(uuid: String) throws {
-        let container = Container(uuid: uuid)
+    /// - Parameter container: target container.  Since only the uuid of the container is considered, `cleanContainer(uuid: String)`method  can be used instead.
+    public func clean(container: Container) throws {
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             throw AppContainerError.containerDirectoryNotFound
         }
@@ -152,6 +148,16 @@ public class AppContainer {
             let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
             try self.fileManager.removeChildContents(at: url)
         }
+    }
+    
+    /// Clear contents in selected container
+    /// - Parameter uuid: uuid of container that you want to clean.
+    public func cleanContainer(uuid: String) throws {
+        guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
+            return
+        }
+        
+        try self.clean(container: container)
     }
     
     /// Clear all containers and activate the default container
