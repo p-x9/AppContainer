@@ -1,7 +1,7 @@
 import Foundation
 
 public class AppContainer {
-    public static let shared = AppContainer()
+    public static let standard = AppContainer()
     
     private let fileManager = FileManager.default
     
@@ -9,6 +9,11 @@ public class AppContainer {
     private lazy var homeDirectoryUrl: URL = {
         fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
     }()
+    
+    /// home directory path
+    private var homeDirectoryPath: String {
+        homeDirectoryUrl.path
+    }
     
     /// url of app container stashed
     /// ~/Library/.__app_container__
@@ -51,6 +56,21 @@ public class AppContainer {
     }
     
     private init() {
+        setup()
+    }
+    
+    /// initialize with app group identifier.
+    /// - Parameter groupIdentifier: app group identifier.
+    public init(groupIdentifier: String) {
+        guard let homeDirectoryUrl = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupIdentifier) else {
+            fatalError("Invalid app group identifier")
+        }
+        
+        self.homeDirectoryUrl = homeDirectoryUrl
+        setup()
+    }
+    
+    private func setup() {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
     }
@@ -77,7 +97,7 @@ public class AppContainer {
         }
         
         try stash()
-        try moveContainerContents(src: container.path, dst: homeDirectoryUrl.path)
+        try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
         
         settings.currentContainerUUID = uuid
     }
@@ -89,7 +109,7 @@ public class AppContainer {
         }
         
         try cleanContainerDirectory(container: container)
-        try moveContainerContents(src: homeDirectoryUrl.path, dst: container.path)
+        try moveContainerContents(src: homeDirectoryPath, dst: container.path(homeDirectoryPath))
     }
     
     /// Delete Selected container.
@@ -103,7 +123,7 @@ public class AppContainer {
     /// - Parameter uuid: uuid of container that you want to delete.
     public func deleteContainer(uuid: String) throws {
         let container = Container(uuid: uuid)
-        guard fileManager.fileExists(atPath: container.path) else {
+        guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             return
         }
         
@@ -111,7 +131,7 @@ public class AppContainer {
             try activate(container: .default)
         }
         
-        try fileManager.removeItem(at: container.url)
+        try fileManager.removeItem(at: container.url(homeDirectoryUrl))
     }
     
     /// Clear contents in selected container
@@ -124,12 +144,13 @@ public class AppContainer {
     /// - Parameter uuid: uuid of container that you want to clean.
     public func cleanContainer(uuid: String) throws {
         let container = Container(uuid: uuid)
-        guard fileManager.fileExists(atPath: container.path) else {
+        guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             return
         }
         
         try Container.Directories.allNames.forEach { name in
-            try self.fileManager.removeChildContents(at: container.url.appendingPathComponent(name))
+            let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
+            try self.fileManager.removeChildContents(at: url)
         }
     }
     
@@ -169,13 +190,13 @@ extension AppContainer {
     }
     
     private func createDefaultContainerIfNeeded() throws {
-        guard !fileManager.fileExists(atPath: Container.default.path) else {
+        guard !fileManager.fileExists(atPath: Container.default.path(homeDirectoryPath)) else {
             return
         }
         
         let container = try createNewContainer(name: "DEFAULT", isDefault: true)
         
-        try moveContainerContents(src: homeDirectoryUrl.path, dst: container.path)
+        try moveContainerContents(src: homeDirectoryPath, dst: container.path(homeDirectoryPath))
     }
     
     @discardableResult
@@ -186,10 +207,11 @@ extension AppContainer {
         try createContainerDirectoryIfNeeded()
         
         // create container directory
-        try fileManager.createDirectoryIfNotExisted(at: container.url, withIntermediateDirectories: true)
+        try fileManager.createDirectoryIfNotExisted(at: container.url(homeDirectoryUrl), withIntermediateDirectories: true)
         
         try Container.Directories.allNames.forEach { name in
-            try self.fileManager.createDirectoryIfNotExisted(at: container.url.appendingPathComponent(name),
+            let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
+            try self.fileManager.createDirectoryIfNotExisted(at: url,
                                                              withIntermediateDirectories: true)
         }
         
@@ -205,11 +227,11 @@ extension AppContainer {
     /// Save as property list.
     /// - Parameter container: target container
     private func updateContainerInfo(for container: Container) throws {
-        guard fileManager.fileExists(atPath: container.path) else {
+        guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             return
         }
         
-        let plistUrl = container.url.appendingPathComponent(Constants.containerInfoPlistName)
+        let plistUrl = container.url(homeDirectoryUrl).appendingPathComponent(Constants.containerInfoPlistName)
         
         if fileManager.fileExists(atPath: plistUrl.path) {
             try fileManager.removeItem(at: plistUrl)
@@ -267,7 +289,8 @@ extension AppContainer {
     /// - Parameter container: target container
     private func cleanContainerDirectory(container: Container) throws {
         try Container.Directories.allNames.forEach { name in
-            try self.fileManager.removeItemIfExisted(at: container.url.appendingPathComponent(name))
+            let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
+            try self.fileManager.removeItemIfExisted(at: url)
         }
     }
 }
