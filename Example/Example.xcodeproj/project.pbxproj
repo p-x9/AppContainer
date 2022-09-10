@@ -16,6 +16,8 @@
 		42AED7C028CD12ED002D885B /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7BF28CD12ED002D885B /* ExampleTests.swift */; };
 		42AED7CA28CD12ED002D885B /* ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7C928CD12ED002D885B /* ExampleUITests.swift */; };
 		42AED7CC28CD12ED002D885B /* ExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7CB28CD12ED002D885B /* ExampleUITestsLaunchTests.swift */; };
+		42AED7DC28CD14B0002D885B /* AppContainer in Frameworks */ = {isa = PBXBuildFile; productRef = 42AED7DB28CD14B0002D885B /* AppContainer */; };
+		42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7DE28CD155A002D885B /* AppContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,9 @@
 		42AED7C528CD12ED002D885B /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42AED7C928CD12ED002D885B /* ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITests.swift; sourceTree = "<group>"; };
 		42AED7CB28CD12ED002D885B /* ExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		42AED7D928CD149E002D885B /* AppContainer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppContainer; path = ..; sourceTree = "<group>"; };
+		42AED7DE28CD155A002D885B /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
+		42AED7E028CD159E002D885B /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42AED7DC28CD14B0002D885B /* AppContainer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,10 +85,12 @@
 		42AED79C28CD12EA002D885B = {
 			isa = PBXGroup;
 			children = (
+				42AED7D828CD149E002D885B /* Packages */,
 				42AED7A728CD12EB002D885B /* Example */,
 				42AED7BE28CD12ED002D885B /* ExampleTests */,
 				42AED7C828CD12ED002D885B /* ExampleUITests */,
 				42AED7A628CD12EB002D885B /* Products */,
+				42AED7DA28CD14B0002D885B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,9 +107,11 @@
 		42AED7A728CD12EB002D885B /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				42AED7E028CD159E002D885B /* Example.entitlements */,
 				42AED7A828CD12EB002D885B /* AppDelegate.swift */,
 				42AED7AA28CD12EB002D885B /* SceneDelegate.swift */,
 				42AED7AC28CD12EB002D885B /* ViewController.swift */,
+				42AED7DD28CD154A002D885B /* Extension */,
 				42AED7AE28CD12EB002D885B /* Main.storyboard */,
 				42AED7B128CD12ED002D885B /* Assets.xcassets */,
 				42AED7B328CD12ED002D885B /* LaunchScreen.storyboard */,
@@ -127,6 +137,29 @@
 			path = ExampleUITests;
 			sourceTree = "<group>";
 		};
+		42AED7D828CD149E002D885B /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				42AED7D928CD149E002D885B /* AppContainer */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		42AED7DA28CD14B0002D885B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		42AED7DD28CD154A002D885B /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				42AED7DE28CD155A002D885B /* AppContainer.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +176,9 @@
 			dependencies = (
 			);
 			name = Example;
+			packageProductDependencies = (
+				42AED7DB28CD14B0002D885B /* AppContainer */,
+			);
 			productName = Example;
 			productReference = 42AED7A528CD12EB002D885B /* Example.app */;
 			productType = "com.apple.product-type.application";
@@ -259,6 +295,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42AED7AD28CD12EB002D885B /* ViewController.swift in Sources */,
+				42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */,
 				42AED7A928CD12EB002D885B /* AppDelegate.swift in Sources */,
 				42AED7AB28CD12EB002D885B /* SceneDelegate.swift in Sources */,
 			);
@@ -435,6 +472,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WLCQDVKTS9;
@@ -450,7 +488,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.p-x9.Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.p-x9.AppContainerExample";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -463,6 +501,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WLCQDVKTS9;
@@ -478,7 +517,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.p-x9.Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.p-x9.AppContainerExample";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -602,6 +641,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		42AED7DB28CD14B0002D885B /* AppContainer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppContainer;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 42AED79D28CD12EA002D885B /* Project object */;
 }
