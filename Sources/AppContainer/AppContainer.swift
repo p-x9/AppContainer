@@ -7,7 +7,7 @@ public class AppContainer {
     
     /// home directory url
     private lazy var homeDirectoryUrl: URL = {
-        fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+        URL(fileURLWithPath: NSHomeDirectory())
     }()
     
     /// home directory path
@@ -18,7 +18,7 @@ public class AppContainer {
     /// url of app container stashed
     /// ~/Library/.__app_container__
     private lazy var containersUrl: URL = {
-        homeDirectoryUrl.appendingPathComponent(Constants.containerFolderName)
+        homeDirectoryUrl.appendingPathComponent("Library").appendingPathComponent(Constants.containerFolderName)
     }()
     
     /// app container settings plist path
@@ -86,6 +86,9 @@ public class AppContainer {
     /// activate selected container
     /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
     public func activate(container: Container) throws {
+        if self.activeContainer?.uuid == container.uuid {
+            return
+        }
         try stash()
         try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
         
