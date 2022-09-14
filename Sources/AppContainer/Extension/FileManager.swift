@@ -126,7 +126,7 @@ extension FileManager {
     }
     
     func removeChildContents(at URL: URL) throws {
-        guard !self.fileExists(atPath: URL.path) else {
+        guard self.fileExists(atPath: URL.path) else {
             return
         }
         
@@ -141,7 +141,7 @@ extension FileManager {
     }
     
     func removeChildContents(atPath path: String) throws {
-        guard !self.fileExists(atPath: path) else {
+        guard self.fileExists(atPath: path) else {
             return
         }
         
@@ -156,7 +156,7 @@ extension FileManager {
     }
     
     func removeItemIfExisted(at URL: URL) throws {
-        guard !self.fileExists(atPath: URL.path) else {
+        guard self.fileExists(atPath: URL.path) else {
             return
         }
         
@@ -164,7 +164,7 @@ extension FileManager {
     }
     
     func removeItemIfExisted(atPath path: String) throws {
-        guard !self.fileExists(atPath: path) else {
+        guard self.fileExists(atPath: path) else {
             return
         }
         

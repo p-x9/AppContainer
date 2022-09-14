@@ -10,9 +10,9 @@ import Foundation
 
 public struct Container: Codable {
     /// container name
-    var name: String?
+    public var name: String?
     /// container unique id
-    let uuid: String
+    public let uuid: String
 }
 
 extension Container {
