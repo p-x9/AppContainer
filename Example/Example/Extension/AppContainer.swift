@@ -10,5 +10,5 @@ import Foundation
 import AppContainer
 
 extension AppContainer {
-    static let group = AppContainer(groupIdentifier: "com.p-x9.AppContainerExample")
+    static let group = AppContainer(groupIdentifier: "group.com.p-x9.AppContainerExample")
 }

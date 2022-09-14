@@ -18,6 +18,8 @@
 		42AED7CC28CD12ED002D885B /* ExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7CB28CD12ED002D885B /* ExampleUITestsLaunchTests.swift */; };
 		42AED7DC28CD14B0002D885B /* AppContainer in Frameworks */ = {isa = PBXBuildFile; productRef = 42AED7DB28CD14B0002D885B /* AppContainer */; };
 		42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7DE28CD155A002D885B /* AppContainer.swift */; };
+		42AED7E228CD1B50002D885B /* KeyValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7E128CD1B50002D885B /* KeyValueTableViewCell.swift */; };
+		42AED7E528D0A56B002D885B /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 42AED7E428D0A56B002D885B /* OrderedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,7 @@
 		42AED7D928CD149E002D885B /* AppContainer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppContainer; path = ..; sourceTree = "<group>"; };
 		42AED7DE28CD155A002D885B /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		42AED7E028CD159E002D885B /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
+		42AED7E128CD1B50002D885B /* KeyValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42AED7E528D0A56B002D885B /* OrderedCollections in Frameworks */,
 				42AED7DC28CD14B0002D885B /* AppContainer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +115,7 @@
 				42AED7A828CD12EB002D885B /* AppDelegate.swift */,
 				42AED7AA28CD12EB002D885B /* SceneDelegate.swift */,
 				42AED7AC28CD12EB002D885B /* ViewController.swift */,
+				42AED7E128CD1B50002D885B /* KeyValueTableViewCell.swift */,
 				42AED7DD28CD154A002D885B /* Extension */,
 				42AED7AE28CD12EB002D885B /* Main.storyboard */,
 				42AED7B128CD12ED002D885B /* Assets.xcassets */,
@@ -178,6 +183,7 @@
 			name = Example;
 			packageProductDependencies = (
 				42AED7DB28CD14B0002D885B /* AppContainer */,
+				42AED7E428D0A56B002D885B /* OrderedCollections */,
 			);
 			productName = Example;
 			productReference = 42AED7A528CD12EB002D885B /* Example.app */;
@@ -251,6 +257,9 @@
 				Base,
 			);
 			mainGroup = 42AED79C28CD12EA002D885B;
+			packageReferences = (
+				42AED7E328D0A56B002D885B /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 42AED7A628CD12EB002D885B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -296,6 +305,7 @@
 			files = (
 				42AED7AD28CD12EB002D885B /* ViewController.swift in Sources */,
 				42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */,
+				42AED7E228CD1B50002D885B /* KeyValueTableViewCell.swift in Sources */,
 				42AED7A928CD12EB002D885B /* AppDelegate.swift in Sources */,
 				42AED7AB28CD12EB002D885B /* SceneDelegate.swift in Sources */,
 			);
@@ -642,10 +652,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		42AED7E328D0A56B002D885B /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		42AED7DB28CD14B0002D885B /* AppContainer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppContainer;
+		};
+		42AED7E428D0A56B002D885B /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42AED7E328D0A56B002D885B /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
