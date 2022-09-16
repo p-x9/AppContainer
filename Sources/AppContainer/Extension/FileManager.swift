@@ -1,9 +1,9 @@
 //
 //  FileManager.swift
-//  
+//
 //
 //  Created by p-x9 on 2022/09/08.
-//  
+//
 //
 
 import Foundation
@@ -53,14 +53,14 @@ extension FileManager {
         try self.moveItem(atPath: srcPath, toPath: dstPath)
     }
     
-    func moveChildContents(at srcURL: URL, to dstURL: URL) throws {
+    func moveChildContents(at srcURL: URL, to dstURL: URL, excludes: [String] = []) throws {
         guard self.fileExists(atPath: srcURL.path) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: srcURL.path)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
@@ -71,14 +71,14 @@ extension FileManager {
         }
     }
     
-    func moveChildContents(atPath srcPath: String, toPath dstPath: String) throws {
+    func moveChildContents(atPath srcPath: String, toPath dstPath: String, excludes: [String] = []) throws {
         guard self.fileExists(atPath: srcPath) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: srcPath)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
@@ -89,14 +89,14 @@ extension FileManager {
         }
     }
     
-    func copyChildContents(at srcURL: URL, to dstURL: URL) throws {
+    func copyChildContents(at srcURL: URL, to dstURL: URL, excludes: [String] = []) throws {
         guard self.fileExists(atPath: srcURL.path) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: srcURL.path)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
@@ -107,14 +107,14 @@ extension FileManager {
         }
     }
     
-    func copyChildContents(atPath srcPath: String, toPath dstPath: String) throws {
+    func copyChildContents(atPath srcPath: String, toPath dstPath: String, excludes: [String] = []) throws {
         guard self.fileExists(atPath: srcPath) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: srcPath)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
@@ -125,14 +125,14 @@ extension FileManager {
         }
     }
     
-    func removeChildContents(at URL: URL) throws {
+    func removeChildContents(at URL: URL, excludes: [String] = []) throws {
         guard self.fileExists(atPath: URL.path) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: URL.path)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
@@ -140,14 +140,14 @@ extension FileManager {
         }
     }
     
-    func removeChildContents(atPath path: String) throws {
+    func removeChildContents(atPath path: String, excludes: [String] = []) throws {
         guard self.fileExists(atPath: path) else {
             return
         }
         
         let contents = try self.contentsOfDirectory(atPath: path)
             .filter {
-                $0 != Constants.containerFolderName
+                $0 != Constants.containerFolderName && !excludes.contains($0)
             }
         
         try contents.forEach {
