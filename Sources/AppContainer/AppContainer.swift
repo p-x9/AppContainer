@@ -36,6 +36,8 @@ public class AppContainer {
         }
     }
     
+    private var groupIdentifier: String?
+    
     /// Active Container.
     /// The original content now exists in the home directory.
     public var activeContainer: Container? {
@@ -67,12 +69,19 @@ public class AppContainer {
         }
         
         self.homeDirectoryUrl = homeDirectoryUrl
+        self.groupIdentifier = groupIdentifier
         setup()
     }
     
     private func setup() {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
+        
+        guard let activeContainer = activeContainer else {
+            return
+        }
+
+        try? moveContainerContents(src: activeContainer.path(homeDirectoryPath), dst: homeDirectoryPath)
     }
     
     /// create new app container
@@ -84,18 +93,21 @@ public class AppContainer {
     }
     
     /// activate selected container
+    /// The directories are not moved at this point.  It will be moved at the next launch.
     /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
     public func activate(container: Container) throws {
         if self.activeContainer?.uuid == container.uuid {
             return
         }
         try stash()
-        try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
+        
+        syncUserDefaults()
         
         settings.currentContainerUUID = container.uuid
     }
     
     /// activate selected container
+    /// The directories are not moved at this point.  It will be moved at the next launch.
     /// - Parameter uuid: container's unique id.
     public func activateContainer(uuid: String) throws {
         guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
@@ -301,5 +313,26 @@ extension AppContainer {
             let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
             try self.fileManager.removeItemIfExisted(at: url)
         }
+    }
+    
+    private func syncUserDefaults() {
+        let userDefaults: UserDefaults?
+        let plistName: String?
+        if let groupIdentifier = groupIdentifier {
+            userDefaults = UserDefaults(suiteName: groupIdentifier)
+            plistName = groupIdentifier
+        } else {
+            userDefaults = UserDefaults.standard
+            plistName = Bundle.main.bundleIdentifier
+        }
+        
+        guard let plistName = plistName,
+              let userDefaults = userDefaults else {
+            return
+        }
+        
+        let plistPath = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
+        
+        userDefaults.sync(with: plistPath)
     }
 }
