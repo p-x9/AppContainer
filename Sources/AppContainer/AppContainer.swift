@@ -50,7 +50,7 @@ public class AppContainer {
     private lazy var _containers: [Container] = {
         (try? loadContainers()) ?? []
     }()
-
+    
     private var activeContainerIndex: Int? {
         _containers.firstIndex(where: { $0.uuid == settings.currentContainerUUID })
     }
@@ -147,9 +147,9 @@ public class AppContainer {
             throw AppContainerError.containerDirectoryNotFound
         }
         
-        try Container.Directories.allNames.forEach { name in
-            let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
-            try self.fileManager.removeChildContents(at: url)
+        try Container.Directories.allCases.forEach { directory in
+            let url = container.url(homeDirectoryUrl).appendingPathComponent(directory.name)
+            try self.fileManager.removeChildContents(at: url, excludes: directory.excludes)
         }
     }
     
@@ -284,13 +284,13 @@ extension AppContainer {
     ///   - src: source path.
     ///   - dst: destination path.
     private func moveContainerContents(src: String, dst: String) throws {
-        try Container.Directories.allNames.forEach { name in
-            let source = src + "/" + name
-            let destination = dst + "/" + name
+        try Container.Directories.allCases.forEach { directory in
+            let source = src + "/" + directory.name
+            let destination = dst + "/" + directory.name
             
             try fileManager.createDirectoryIfNotExisted(atPath: destination, withIntermediateDirectories: true)
-            try fileManager.removeChildContents(atPath: destination)
-            try fileManager.moveChildContents(atPath: source, toPath: destination)
+            try fileManager.removeChildContents(atPath: destination, excludes: directory.excludes)
+            try fileManager.moveChildContents(atPath: source, toPath: destination, excludes: directory.excludes)
         }
     }
     

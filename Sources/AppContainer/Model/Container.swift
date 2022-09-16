@@ -1,9 +1,9 @@
 //
 //  Container.swift
-//  
+//
 //
 //  Created by p-x9 on 2022/09/08.
-//  
+//
 //
 
 import Foundation
@@ -48,12 +48,23 @@ extension Container {
 extension Container {
     enum Directories: String, CaseIterable {
         case library = "Library"
+        case libraryCaches = "Library/Caches"
+        case libraryPreferences = "Library/Preferences"
         case documents = "Documents"
-        case systemData = "SystemData"
+        //        case systemData = "SystemData"
         case tmp = "tmp"
         
         var name: String {
             rawValue
+        }
+        
+        var excludes: [String] {
+            switch self {
+            case .library:
+                return ["Caches", "Preferences"]
+            default:
+                return []
+            }
         }
         
         static var allNames: [String] {
