@@ -77,11 +77,15 @@ public class AppContainer {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
         
-        guard let activeContainer = activeContainer else {
+        guard settings.isSwapRequired,
+              let activeContainer = activeContainer else {
             return
         }
 
         try? moveContainerContents(src: activeContainer.path(homeDirectoryPath), dst: homeDirectoryPath)
+        syncUserDefaults()
+
+        settings.isSwapRequired = false
     }
     
     /// create new app container
@@ -99,10 +103,15 @@ public class AppContainer {
         if self.activeContainer?.uuid == container.uuid {
             return
         }
+        
+        exportUserDefaults()
+        
         try stash()
         
+        // clear `cfprefsd`'s cache
         syncUserDefaults()
         
+        settings.isSwapRequired = true
         settings.currentContainerUUID = container.uuid
     }
     
@@ -314,25 +323,40 @@ extension AppContainer {
             try self.fileManager.removeItemIfExisted(at: url)
         }
     }
-    
-    private func syncUserDefaults() {
+}
+
+// MARK: - UserDefaults
+extension AppContainer {
+    private func getUserDefaults() -> UserDefaults? {
         let userDefaults: UserDefaults?
-        let plistName: String?
         if let groupIdentifier = groupIdentifier {
             userDefaults = UserDefaults(suiteName: groupIdentifier)
-            plistName = groupIdentifier
         } else {
             userDefaults = UserDefaults.standard
-            plistName = Bundle.main.bundleIdentifier
         }
         
-        guard let plistName = plistName,
-              let userDefaults = userDefaults else {
+        return userDefaults
+    }
+    
+    private func syncUserDefaults() {
+        guard let plistName = groupIdentifier ?? Bundle.main.bundleIdentifier,
+              let userDefaults = getUserDefaults() else {
             return
         }
         
         let plistPath = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
         
         userDefaults.sync(with: plistPath)
+    }
+    
+    private func exportUserDefaults() {
+        guard let plistName = groupIdentifier ?? Bundle.main.bundleIdentifier,
+              let userDefaults = getUserDefaults() else {
+            return
+        }
+        
+        let plistPath = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
+        
+        try? userDefaults.export(to: plistPath)
     }
 }

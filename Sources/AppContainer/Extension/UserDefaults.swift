@@ -28,4 +28,10 @@ extension UserDefaults {
             self.set(value, forKey: key)
         }
     }
+    
+    func export(to plistUrl: URL) throws {
+        let dictionary = dictionaryRepresentation()
+        let plistData = try PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0)
+        try plistData.write(to: plistUrl)
+    }
 }
