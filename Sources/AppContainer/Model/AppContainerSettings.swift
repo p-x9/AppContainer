@@ -10,4 +10,5 @@ import Foundation
 
 struct AppContainerSettings: Codable {
     var currentContainerUUID: String
+    var isSwapRequired: Bool = false
 }
