@@ -20,6 +20,7 @@
 		42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7DE28CD155A002D885B /* AppContainer.swift */; };
 		42AED7E228CD1B50002D885B /* KeyValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AED7E128CD1B50002D885B /* KeyValueTableViewCell.swift */; };
 		42AED7E528D0A56B002D885B /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 42AED7E428D0A56B002D885B /* OrderedCollections */; };
+		42DAFE3828D8AF2400FA8847 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DAFE3728D8AF2400FA8847 /* UserDefaults.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		42AED7DE28CD155A002D885B /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		42AED7E028CD159E002D885B /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		42AED7E128CD1B50002D885B /* KeyValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueTableViewCell.swift; sourceTree = "<group>"; };
+		42DAFE3728D8AF2400FA8847 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				42AED7DE28CD155A002D885B /* AppContainer.swift */,
+				42DAFE3728D8AF2400FA8847 /* UserDefaults.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 			files = (
 				42AED7AD28CD12EB002D885B /* ViewController.swift in Sources */,
 				42AED7DF28CD155A002D885B /* AppContainer.swift in Sources */,
+				42DAFE3828D8AF2400FA8847 /* UserDefaults.swift in Sources */,
 				42AED7E228CD1B50002D885B /* KeyValueTableViewCell.swift in Sources */,
 				42AED7A928CD12EB002D885B /* AppDelegate.swift in Sources */,
 				42AED7AB28CD12EB002D885B /* SceneDelegate.swift in Sources */,
