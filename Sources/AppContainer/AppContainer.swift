@@ -76,16 +76,6 @@ public class AppContainer {
     private func setup() {
         try? createContainerDirectoryIfNeeded()
         try? createDefaultContainerIfNeeded()
-        
-        guard settings.isSwapRequired,
-              let activeContainer = activeContainer else {
-            return
-        }
-
-        try? moveContainerContents(src: activeContainer.path(homeDirectoryPath), dst: homeDirectoryPath)
-        syncUserDefaults()
-
-        settings.isSwapRequired = false
     }
     
     /// create new app container
@@ -97,7 +87,6 @@ public class AppContainer {
     }
     
     /// activate selected container
-    /// The directories are not moved at this point.  It will be moved at the next launch.
     /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
     public func activate(container: Container) throws {
         if self.activeContainer?.uuid == container.uuid {
@@ -111,12 +100,14 @@ public class AppContainer {
         // clear `cfprefsd`'s cache
         syncUserDefaults()
         
-        settings.isSwapRequired = true
+        try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
+        
+        syncUserDefaults()
+        
         settings.currentContainerUUID = container.uuid
     }
     
     /// activate selected container
-    /// The directories are not moved at this point.  It will be moved at the next launch.
     /// - Parameter uuid: container's unique id.
     public func activateContainer(uuid: String) throws {
         guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
