@@ -136,6 +136,7 @@ class ViewController: UIViewController {
             guard let self = self, let text = textField.text, !text.isEmpty else { return }
             
             _ = try? self.appContainer.createNewContainer(name: text)
+            self.configureContainerMenu()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
