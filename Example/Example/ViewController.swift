@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import AppContainer
 import OrderedCollections
 
 class ViewController: UIViewController {
     
     let vi = View()
     
+    let appContainer = AppContainer.standard
     let userDefaults = UserDefaults.standard
     //init(suiteName: "group.com.p-x9.AppContainerExample")!
     
@@ -37,6 +39,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        title = appContainer.activeContainer?.name
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -44,7 +47,7 @@ class ViewController: UIViewController {
         
     }
 
-    func setupViews() {
+    private func setupViews() {
         view.addSubview(vi)
         
         vi.tableView.register(KeyValueTableViewCell.self, forCellReuseIdentifier: "\(KeyValueTableViewCell.self)")
@@ -54,7 +57,7 @@ class ViewController: UIViewController {
         refreshUserDefaultsTable()
     }
 
-    func setupViewConstraints() {
+    private func setupViewConstraints() {
         vi.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -65,16 +68,82 @@ class ViewController: UIViewController {
         ])
     }
     
-    func setupNavigationItems() {
+    private func setupNavigationItems() {
         let addBarButtonItem = UIBarButtonItem(image: .init(systemName: "plus"), style: .plain,
                                                target: self, action: #selector(addItem))
         
+        let containerButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.grid.3x3.square"), style: .plain, target: self, action: nil)
+        
+        navigationItem.leftBarButtonItem = containerButtonItem
         navigationItem.rightBarButtonItem = addBarButtonItem
+        
+        configureContainerMenu()
+    }
+    
+    private func configureContainerMenu() {
+        var actions = [UIMenuElement]()
+        appContainer.containers.enumerated().forEach { i, container in
+            let action = UIAction(title: container.name ?? "Container\(i)",
+                                  state: container.uuid == appContainer.activeContainer?.uuid ? .on : .off) { [weak self] _ in
+                guard let self = self else { return }
+                self.activate(container: container)
+                self.configureContainerMenu()
+            }
+            actions.append(action)
+        }
+        let addContainerAction = UIAction(title: "Add New Container", image: UIImage(systemName: "plus")) { [weak self] _ in
+            self?.addNewContainer()
+        }
+        
+        
+        navigationItem.leftBarButtonItem?.menu = UIMenu(options: .displayInline,
+                                                        children: [UIMenu(options: .displayInline, children: actions), addContainerAction])
+    }
+    
+    private func activate(container: Container) {
+        try? self.appContainer.activate(container: container)
+        
+        let alert = UIAlertController(title: "Restart App",
+                                      message: "please restart app to activate selected container.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            UIControl().sendAction(Selector("suspend"), to: UIApplication.shared, for: nil)
+            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
+                exit(0)
+            }
+        }
+        
+        alert.addAction(okAction)
+        
+        present(alert, animated: true)
     }
     
     func refreshUserDefaultsTable() {
         self.dictionary = userDefaults.dictionaryRepresentation()
         self.vi.tableView.reloadData()
+    }
+    
+    func addNewContainer() {
+        let alert = UIAlertController(title: "Add New Container", message: nil, preferredStyle: .alert)
+        alert.addTextField()
+        
+        guard let textField = alert.textFields?.first else {
+            return
+        }
+        
+        textField.placeholder = "Container Name"
+        
+        let okAction = UIAlertAction(title: "Add", style: .destructive) { [weak self] _ in
+            guard let self = self, let text = textField.text, !text.isEmpty else { return }
+            
+            _ = try? self.appContainer.createNewContainer(name: text)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
     }
     
     @objc
