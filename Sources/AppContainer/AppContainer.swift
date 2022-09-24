@@ -57,6 +57,9 @@ public class AppContainer {
         _containers.firstIndex(where: { $0.uuid == settings.currentContainerUUID })
     }
     
+    /// suite names of UserDefaults.
+    private var cachedSuiteNames = [String]()
+    
     private init() {
         setup()
     }
@@ -93,16 +96,16 @@ public class AppContainer {
             return
         }
         
-        exportUserDefaults()
+        try exportUserDefaults()
         
         try stash()
         
         // clear `cfprefsd`'s cache
-        syncUserDefaults()
+        try syncUserDefaults()
         
         try moveContainerContents(src: container.path(homeDirectoryPath), dst: homeDirectoryPath)
         
-        syncUserDefaults()
+        try syncUserDefaults()
         
         settings.currentContainerUUID = container.uuid
     }
@@ -318,36 +321,82 @@ extension AppContainer {
 
 // MARK: - UserDefaults
 extension AppContainer {
-    private func getUserDefaults() -> UserDefaults? {
-        let userDefaults: UserDefaults?
-        if let groupIdentifier = groupIdentifier {
-            userDefaults = UserDefaults(suiteName: groupIdentifier)
+    private func syncUserDefaults() throws {
+        cachedSuiteNames.forEach {
+            syncUserDefaults(suiteName: $0)
+        }
+    }
+    
+    private func syncUserDefaults(suiteName: String?) {
+        guard let plistName = suiteName ?? Bundle.main.bundleIdentifier else { return }
+        let plistUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
+        
+        let applicationID: CFString
+        if let suiteName = suiteName, suiteName != Bundle.main.bundleIdentifier {
+            applicationID = suiteName as CFString
         } else {
-            userDefaults = UserDefaults.standard
+            applicationID = kCFPreferencesCurrentApplication
         }
         
-        return userDefaults
-    }
-    
-    private func syncUserDefaults() {
-        guard let plistName = groupIdentifier ?? Bundle.main.bundleIdentifier,
-              let userDefaults = getUserDefaults() else {
+        var udKeys = [CFString]()
+        if let keys = CFPreferencesCopyKeyList(applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) {
+            udKeys = [CFString](keys)
+        }
+        
+        guard let plistDictionary = NSDictionary(contentsOf: plistUrl) as? [String : Any] else {
+            udKeys.forEach {
+                CFPreferencesSetAppValue($0, nil, applicationID)
+            }
             return
         }
         
-        let plistPath = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
+        udKeys.forEach { key in
+            if let value = plistDictionary[key as String] {
+                CFPreferencesSetAppValue(key, value as CFPropertyList, applicationID)
+            } else {
+                CFPreferencesSetAppValue(key, nil, applicationID)
+            }
+        }
         
-        userDefaults.sync(with: plistPath)
+        for (key, value) in plistDictionary {
+            CFPreferencesSetAppValue(key as CFString, value as CFPropertyList, applicationID)
+        }
     }
     
-    private func exportUserDefaults() {
-        guard let plistName = groupIdentifier ?? Bundle.main.bundleIdentifier,
-              let userDefaults = getUserDefaults() else {
+    private func exportUserDefaults() throws {
+        let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
+        let suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
+            .filter { $0.hasSuffix(".plist") }
+            .compactMap { $0.components(separatedBy: ".plist").first }
+
+        cachedSuiteNames = suites
+        
+        try suites.forEach {
+            try exportUserDefaults(suiteName: $0)
+        }
+    }
+    
+    private func exportUserDefaults(suiteName: String?) throws {
+        guard let plistName = suiteName ?? Bundle.main.bundleIdentifier else { return }
+        let plistUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
+        
+        let applicationID: CFString
+        if let suiteName = suiteName, suiteName != Bundle.main.bundleIdentifier {
+            applicationID = suiteName as CFString
+        } else {
+            applicationID = kCFPreferencesCurrentApplication
+        }
+        
+        CFPreferencesAppSynchronize(applicationID)
+        
+        guard let keys = CFPreferencesCopyKeyList(applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost),
+              let dictionary = CFPreferencesCopyMultiple(keys, applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) as? Dictionary<String, Any> else {
+            try fileManager.removeItem(at: plistUrl)
             return
         }
         
-        let plistPath = homeDirectoryUrl.appendingPathComponent("Library/Preferences/\(plistName).plist")
-        
-        try? userDefaults.export(to: plistPath)
+        let plistData = try PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0)
+        try plistData.write(to: plistUrl)
     }
+    
 }
