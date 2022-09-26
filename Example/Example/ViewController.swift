@@ -106,7 +106,7 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Restart App",
                                       message: "please restart app to activate selected container.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            UIControl().sendAction(Selector("suspend"), to: UIApplication.shared, for: nil)
+            UIControl().sendAction(NSSelectorFromString("suspend"), to: UIApplication.shared, for: nil)
             Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
                 exit(0)
             }
@@ -212,6 +212,19 @@ class ViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    @objc
+    func deleteItem(at index: Int) -> Bool {
+        let item = self.orderedDictionary.elements[index]
+        userDefaults.set(nil, forKey: item.key)
+        let isDeleted = userDefaults.dictionaryRepresentation()[item.key] == nil
+        if isDeleted {
+            self.dictionary = userDefaults.dictionaryRepresentation()
+            vi.tableView.deleteRows(at: [[0, index]], with: .automatic)
+        }
+        
+        return isDeleted
+    }
+    
 }
 
 extension ViewController: UITableViewDataSource {
@@ -233,6 +246,14 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let key = orderedDictionary.keys[indexPath.item]
         self.editItem(key: key)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completionHandler in
+            guard let self = self else { return }
+            completionHandler(self.deleteItem(at: indexPath.item))
+        }
+        return .init(actions: [deleteAction])
     }
 }
 
