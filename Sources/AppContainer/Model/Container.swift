@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Container: Codable {
+public struct Container: Codable, Equatable {
     /// container name
     public var name: String?
     /// container unique id
