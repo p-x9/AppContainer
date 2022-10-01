@@ -85,8 +85,10 @@ public class AppContainer {
     /// - Parameter name: container name
     /// - Returns: created container info
     @discardableResult
-    public func createNewContainer(name: String) throws -> Container {
-        try createNewContainer(name: name, isDefault: false)
+    public func createNewContainer(name: String, description: String? = nil) throws -> Container {
+        try createNewContainer(name: name,
+                               description: description,
+                               isDefault: false)
     }
     
     /// activate selected container
@@ -218,13 +220,15 @@ extension AppContainer {
             return
         }
         
-        let container = try createNewContainer(name: "DEFAULT", isDefault: true)
+        let container = try createNewContainer(name: "DEFAULT",
+                                               description: nil,
+                                               isDefault: true)
         
         try moveContainerContents(src: homeDirectoryPath, dst: container.path(homeDirectoryPath))
     }
     
     @discardableResult
-    private func createNewContainer(name: String, isDefault: Bool) throws -> Container {
+    private func createNewContainer(name: String, description: String?, isDefault: Bool) throws -> Container {
         let container: Container = isDefault ? .default : .init(name: name, uuid: UUID().uuidString)
         
         // create containers directory if needed
@@ -242,7 +246,7 @@ extension AppContainer {
         _containers.append(container)
         
         // create plist
-        try updateContainerInfo(for: container)
+        try saveContainerInfo(for: container)
         
         return container
     }
@@ -251,6 +255,18 @@ extension AppContainer {
     /// Save as property list.
     /// - Parameter container: target container
     private func updateContainerInfo(for container: Container) throws {
+        // update info
+        if let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }) {
+            _containers[matchedIndex] = container
+        }
+        
+        // save plist
+        try saveContainerInfo(for: container)
+    }
+    
+    /// Save container information.
+    /// - Parameter container: target container
+    private func saveContainerInfo(for container: Container) throws {
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             return
         }
@@ -259,11 +275,6 @@ extension AppContainer {
         
         if fileManager.fileExists(atPath: plistUrl.path) {
             try fileManager.removeItem(at: plistUrl)
-        }
-        
-        // update name
-        if let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }) {
-            _containers[matchedIndex].name = container.name
         }
         
         // save plist
