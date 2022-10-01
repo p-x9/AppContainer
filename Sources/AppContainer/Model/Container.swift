@@ -13,6 +13,19 @@ public struct Container: Codable, Equatable {
     public var name: String?
     /// container unique id
     public let uuid: String
+    
+    /// description
+    public var description: String?
+    
+    /// created date
+    public let createdAt: Date?
+    
+    init(name: String?, uuid: String, description: String? = nil) {
+        self.name = name
+        self.uuid = uuid
+        self.description = description
+        self.createdAt = Date()
+    }
 }
 
 extension Container {
