@@ -110,6 +110,8 @@ public class AppContainer {
         try syncUserDefaults()
         
         settings.currentContainerUUID = container.uuid
+        
+        incrementActivatedCount(uuid: container.uuid)
     }
     
     /// activate selected container
@@ -349,6 +351,18 @@ extension AppContainer {
             let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
             try self.fileManager.removeItemIfExisted(at: url)
         }
+    }
+    
+    /// increment container  activated count
+    /// - Parameter uuid: target container uuid
+    private func incrementActivatedCount(uuid: String) {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
+            return
+        }
+        let currentActivatedCount = _containers[matchedIndex].activatedCount
+        
+        try? updateInfo(of: _containers[matchedIndex],
+                        keyValue: .init(\.activatedCount, currentActivatedCount + 1))
     }
 }
 
