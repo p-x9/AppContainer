@@ -20,8 +20,11 @@ public struct Container: Codable, Equatable {
     /// created date
     public let createdAt: Date?
     
+    /// last activated date
+    public var lastActivatedDate: Date?
+    
     /// activated count
-    public var activatedCount: Int = 0
+    public var activatedCount: Int? = 0
     
     init(name: String?, uuid: String, description: String? = nil) {
         self.name = name
