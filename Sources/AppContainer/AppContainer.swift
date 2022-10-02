@@ -85,8 +85,10 @@ public class AppContainer {
     /// - Parameter name: container name
     /// - Returns: created container info
     @discardableResult
-    public func createNewContainer(name: String) throws -> Container {
-        try createNewContainer(name: name, isDefault: false)
+    public func createNewContainer(name: String, description: String? = nil) throws -> Container {
+        try createNewContainer(name: name,
+                               description: description,
+                               isDefault: false)
     }
     
     /// activate selected container
@@ -108,6 +110,11 @@ public class AppContainer {
         try syncUserDefaults()
         
         settings.currentContainerUUID = container.uuid
+        
+        // increment activated count
+        incrementActivatedCount(uuid: container.uuid)
+        // update last activated date
+        try? updateInfo(of: container, keyValue: .init(\.lastActivatedDate, Date()))
     }
     
     /// activate selected container
@@ -134,7 +141,8 @@ public class AppContainer {
     /// If an attempt is made to delete a container currently in use, make the default container active
     /// - Parameter container: container that you want to delete. Since only the uuid of the container is considered, `deleteContainer(uuid: String)`method  can be used instead.
     public func delete(container: Container) throws {
-        guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }),
+              fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             throw AppContainerError.containerDirectoryNotFound
         }
         
@@ -143,6 +151,8 @@ public class AppContainer {
         }
         
         try fileManager.removeItem(at: container.url(homeDirectoryUrl))
+        
+        _containers.remove(at: matchedIndex)
     }
     
     /// Delete Selected container.
@@ -184,6 +194,28 @@ public class AppContainer {
         
         try fileManager.removeItem(at: containersUrl)
     }
+    
+    /// Update container informations
+    /// - Parameters:
+    ///   - container: target container. Since only the uuid of the container is considered, `updateContainerInfo(uuid: String, keyValue: WritableKeyPathWithValue<Container>)`method  can be used instead.
+    ///   - keyValue: update key and value
+    public func updateInfo(of container: Container, keyValue: WritableKeyPathWithValue<Container>) throws {
+        try updateContainerInfo(uuid: container.uuid, keyValue: keyValue)
+    }
+    
+    /// Update container informations
+    /// - Parameters:
+    ///   - uuid: target container's uuid
+    ///   - keyValue: update key and value
+    public func updateContainerInfo(uuid: String, keyValue: WritableKeyPathWithValue<Container>) throws {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
+            return
+        }
+        
+        keyValue.apply(&_containers[matchedIndex])
+        
+        try saveContainerInfo(for: _containers[matchedIndex])
+    }
 }
 
 extension AppContainer {
@@ -218,13 +250,15 @@ extension AppContainer {
             return
         }
         
-        let container = try createNewContainer(name: "DEFAULT", isDefault: true)
+        let container = try createNewContainer(name: "DEFAULT",
+                                               description: nil,
+                                               isDefault: true)
         
         try moveContainerContents(src: homeDirectoryPath, dst: container.path(homeDirectoryPath))
     }
     
     @discardableResult
-    private func createNewContainer(name: String, isDefault: Bool) throws -> Container {
+    private func createNewContainer(name: String, description: String?, isDefault: Bool) throws -> Container {
         let container: Container = isDefault ? .default : .init(name: name, uuid: UUID().uuidString)
         
         // create containers directory if needed
@@ -242,15 +276,14 @@ extension AppContainer {
         _containers.append(container)
         
         // create plist
-        try updateContainerInfo(for: container)
+        try saveContainerInfo(for: container)
         
         return container
     }
     
-    /// Update container information.
-    /// Save as property list.
+    /// Save container information.
     /// - Parameter container: target container
-    private func updateContainerInfo(for container: Container) throws {
+    private func saveContainerInfo(for container: Container) throws {
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             return
         }
@@ -259,11 +292,6 @@ extension AppContainer {
         
         if fileManager.fileExists(atPath: plistUrl.path) {
             try fileManager.removeItem(at: plistUrl)
-        }
-        
-        // update name
-        if let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }) {
-            _containers[matchedIndex].name = container.name
         }
         
         // save plist
@@ -316,6 +344,18 @@ extension AppContainer {
             let url = container.url(homeDirectoryUrl).appendingPathComponent(name)
             try self.fileManager.removeItemIfExisted(at: url)
         }
+    }
+    
+    /// increment container  activated count
+    /// - Parameter uuid: target container uuid
+    private func incrementActivatedCount(uuid: String) {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
+            return
+        }
+        let currentActivatedCount = _containers[matchedIndex].activatedCount ?? 0
+        
+        try? updateInfo(of: _containers[matchedIndex],
+                        keyValue: .init(\.activatedCount, currentActivatedCount + 1))
     }
 }
 
