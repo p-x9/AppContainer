@@ -134,7 +134,8 @@ public class AppContainer {
     /// If an attempt is made to delete a container currently in use, make the default container active
     /// - Parameter container: container that you want to delete. Since only the uuid of the container is considered, `deleteContainer(uuid: String)`method  can be used instead.
     public func delete(container: Container) throws {
-        guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }),
+              fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             throw AppContainerError.containerDirectoryNotFound
         }
         
@@ -143,6 +144,8 @@ public class AppContainer {
         }
         
         try fileManager.removeItem(at: container.url(homeDirectoryUrl))
+        
+        _containers.remove(at: matchedIndex)
     }
     
     /// Delete Selected container.
