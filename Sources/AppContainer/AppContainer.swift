@@ -111,7 +111,10 @@ public class AppContainer {
         
         settings.currentContainerUUID = container.uuid
         
+        // increment activated count
         incrementActivatedCount(uuid: container.uuid)
+        // update last activated date
+        try? updateInfo(of: container, keyValue: .init(\.lastActivatedDate, Date()))
     }
     
     /// activate selected container
@@ -359,7 +362,7 @@ extension AppContainer {
         guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
             return
         }
-        let currentActivatedCount = _containers[matchedIndex].activatedCount
+        let currentActivatedCount = _containers[matchedIndex].activatedCount ?? 0
         
         try? updateInfo(of: _containers[matchedIndex],
                         keyValue: .init(\.activatedCount, currentActivatedCount + 1))
