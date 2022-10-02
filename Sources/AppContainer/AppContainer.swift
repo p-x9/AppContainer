@@ -278,19 +278,6 @@ extension AppContainer {
         return container
     }
     
-    /// Update container information.
-    /// Save as property list.
-    /// - Parameter container: target container
-    private func updateContainerInfo(for container: Container) throws {
-        // update info
-        if let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }) {
-            _containers[matchedIndex] = container
-        }
-        
-        // save plist
-        try saveContainerInfo(for: container)
-    }
-    
     /// Save container information.
     /// - Parameter container: target container
     private func saveContainerInfo(for container: Container) throws {
