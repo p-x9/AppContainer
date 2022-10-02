@@ -186,6 +186,28 @@ public class AppContainer {
         
         try fileManager.removeItem(at: containersUrl)
     }
+    
+    /// Update container informations
+    /// - Parameters:
+    ///   - container: target container. Since only the uuid of the container is considered, `updateContainerInfo(uuid: String, keyValue: WritableKeyPathWithValue<Container>)`method  can be used instead.
+    ///   - keyValue: update key and value
+    public func updateInfo(of container: Container, keyValue: WritableKeyPathWithValue<Container>) {
+        updateContainerInfo(uuid: container.uuid, keyValue: keyValue)
+    }
+    
+    /// Update container informations
+    /// - Parameters:
+    ///   - uuid: target container's uuid
+    ///   - keyValue: update key and value
+    public func updateContainerInfo(uuid: String, keyValue: WritableKeyPathWithValue<Container>) {
+        guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
+            return
+        }
+        
+        keyValue.apply(&_containers[matchedIndex])
+        
+        saveContainerInfo(for: _containers[matchedIndex])
+    }
 }
 
 extension AppContainer {
