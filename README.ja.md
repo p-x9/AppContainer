@@ -9,6 +9,8 @@
 [![Github stars](https://img.shields.io/github/stars/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/stargazers)
 [![Github top language](https://img.shields.io/github/languages/top/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/)
 
+> Language Switch: [日本語](https://github.com/p-x9/AppContainer/blob/main/README.ja.md).
+
 ## 原理
 ### ディレクトリ
 アプリが書き込み可能な領域は、ホームディレクトリ配下にあります。
