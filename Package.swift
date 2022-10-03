@@ -6,8 +6,7 @@ import PackageDescription
 let package = Package(
     name: "AppContainer",
     platforms: [
-        .macOS(.v10_13),
-        .iOS(.v14)
+        .iOS(.v11)
     ],
     products: [
         .library(
