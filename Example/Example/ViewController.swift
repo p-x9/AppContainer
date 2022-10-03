@@ -84,6 +84,7 @@ class ViewController: UIViewController {
         var actions = [UIMenuElement]()
         appContainer.containers.enumerated().forEach { i, container in
             let action = UIAction(title: container.name ?? "Container\(i)",
+                                  subtitle: container.description,
                                   state: container == appContainer.activeContainer ? .on : .off) { [weak self] _ in
                 guard let self = self,
                       container != self.appContainer.activeContainer else {

@@ -44,6 +44,13 @@ class KeyValueTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        keyLabel.text = ""
+        valueLabel.text = ""
+    }
+    
     func setupViews() {
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(keyLabel)
@@ -56,13 +63,15 @@ class KeyValueTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
-            stackView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            stackView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            stackView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 2),
+            stackView.rightAnchor.constraint(equalTo: contentView.rightAnchor,constant: -2),
         ])
     }
     
-    func configure(key: String, value: Any) {
+    func configure(key: String, value: Any?) {
         keyLabel.text = key
-        valueLabel.text = "\(value)"
+        if let value = value as? CustomStringConvertible {
+            valueLabel.text = "\(value)"
+        }
     }
 }

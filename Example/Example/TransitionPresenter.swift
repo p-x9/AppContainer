@@ -14,4 +14,9 @@ enum TransitionPresenter {
         let vc = ContainerListViewController(appContainer: appContainer)
         UIApplication.shared.topViewController?.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    static func pushContainerViewController(for container: Container) {
+        let vc = ContainerViewController(container: container)
+        UIApplication.shared.topViewController?.navigationController?.pushViewController(vc, animated: true)
+    }
 }

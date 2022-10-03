@@ -1,5 +1,5 @@
 //
-//  ContainerListViewController.swift
+//  ContainerViewController.swift
 //  Example
 //
 //  Created by p-x9 on 2022/10/03.
@@ -9,35 +9,49 @@
 import UIKit
 import AppContainer
 
-class ContainerListViewController: UIViewController {
+class ContainerViewController: UIViewController {
+    
+    struct Item {
+        let name: String
+        let keyPath: PartialKeyPath<Container>
+    }
+    
+    let container: Container
     
     let vi = View()
     
-    let appContainer: AppContainer
+    let items: [Item] = [
+        .init(name: "Name", keyPath: \.name),
+        .init(name: "UUID", keyPath: \.uuid),
+        .init(name: "isDefault", keyPath: \.isDefault),
+        .init(name: "Description", keyPath: \.description),
+        .init(name: "CreatedAt", keyPath: \.createdAt),
+        .init(name: "LastActivatedDate", keyPath: \.lastActivatedDate),
+        .init(name: "ActivatedCount", keyPath: \.activatedCount)
+    ]
     
-    init(appContainer: AppContainer) {
-        self.appContainer = appContainer
+    init(container: Container) {
+        self.container = container
         
         super.init(nibName: nil, bundle: nil)
         
         setupViews()
         setupViewConstraints()
-        title = "App Containers"
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupViews() {
+    private func setupViews() {
         view.addSubview(vi)
         
-        vi.tableView.register(AppContainerTableViewCell.self, forCellReuseIdentifier: "\(AppContainerTableViewCell.self)")
+        vi.tableView.register(KeyValueTableViewCell.self, forCellReuseIdentifier: "\(KeyValueTableViewCell.self)")
         vi.tableView.dataSource = self
         vi.tableView.delegate = self
     }
     
-    func setupViewConstraints() {
+    private func setupViewConstraints() {
         vi.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -47,37 +61,35 @@ class ContainerListViewController: UIViewController {
             vi.rightAnchor.constraint(equalTo: view.rightAnchor),
         ])
     }
+    
 }
 
-extension ContainerListViewController: UITableViewDataSource {
+extension ContainerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appContainer.containers.count
+        items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "\(AppContainerTableViewCell.self)",
-                                                 for: indexPath) as! AppContainerTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "\(KeyValueTableViewCell.self)",
+                                                 for: indexPath) as! KeyValueTableViewCell
         
-        let container = appContainer.containers[indexPath.row]
-        cell.configure(with: container)
+        let item = items[indexPath.row]
+        cell.configure(key: item.name, value: container[keyPath: item.keyPath])
         return cell
     }
-}
-
-extension ContainerListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        TransitionPresenter.pushContainerViewController(for: appContainer.containers[indexPath.row])
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        return .init(actions: [])
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        "Information"
     }
 }
 
-extension ContainerListViewController {
+extension ContainerViewController: UITableViewDelegate {
+    
+}
+
+extension ContainerViewController {
     class View: UIView {
-        let tableView = UITableView(frame: .null, style: .insetGrouped)
+        let tableView = UITableView(frame: .null, style: .grouped)
         
         override init(frame: CGRect) {
             super.init(frame: frame)
