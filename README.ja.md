@@ -2,6 +2,13 @@
 
 まるでコンテナを載せ替えるかのように、一つのアプリで複数の環境を作成・管理することのできるライブラリです。
 
+<!-- # Badges -->
+
+[![Github issues](https://img.shields.io/github/issues/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/issues)
+[![Github forks](https://img.shields.io/github/forks/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/network/members)
+[![Github stars](https://img.shields.io/github/stars/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/stargazers)
+[![Github top language](https://img.shields.io/github/languages/top/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/)
+
 ## 原理
 ### ディレクトリ
 アプリが書き込み可能な領域は、ホームディレクトリ配下にあります。

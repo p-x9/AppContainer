@@ -4,6 +4,12 @@ This library allows you to create and manage multiple environments with a single
 
 This is useful when you want to test multiple accounts in a staging application.
 
+<!-- # Badges -->
+
+[![Github issues](https://img.shields.io/github/issues/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/issues)
+[![Github forks](https://img.shields.io/github/forks/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/network/members)
+[![Github stars](https://img.shields.io/github/stars/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/stargazers)
+[![Github top language](https://img.shields.io/github/languages/top/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/)
 
 ## Document
 ### AppGroup
