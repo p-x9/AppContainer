@@ -138,17 +138,20 @@ class ViewController: UIViewController {
     func addNewContainer() {
         let alert = UIAlertController(title: "Add New Container", message: nil, preferredStyle: .alert)
         alert.addTextField()
+        alert.addTextField()
         
-        guard let textField = alert.textFields?.first else {
+        guard let nameTextField = alert.textFields?[0],
+              let descriptionTextField = alert.textFields?[1] else {
             return
         }
         
-        textField.placeholder = "Container Name"
+        nameTextField.placeholder = "Name"
+        descriptionTextField.placeholder = "Description"
         
         let okAction = UIAlertAction(title: "Add", style: .destructive) { [weak self] _ in
-            guard let self = self, let text = textField.text, !text.isEmpty else { return }
+            guard let self = self, let text = nameTextField.text, !text.isEmpty else { return }
             
-            _ = try? self.appContainer.createNewContainer(name: text)
+            _ = try? self.appContainer.createNewContainer(name: text, description: descriptionTextField.text)
             self.configureContainerMenu()
         }
         
