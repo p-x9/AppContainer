@@ -259,7 +259,7 @@ extension AppContainer {
     
     @discardableResult
     private func createNewContainer(name: String, description: String?, isDefault: Bool) throws -> Container {
-        let container: Container = isDefault ? .default : .init(name: name, uuid: UUID().uuidString)
+        let container: Container = isDefault ? .default : .init(name: name, uuid: UUID().uuidString, description: description)
         
         // create containers directory if needed
         try createContainerDirectoryIfNeeded()
