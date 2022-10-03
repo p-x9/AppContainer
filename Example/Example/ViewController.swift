@@ -85,7 +85,10 @@ class ViewController: UIViewController {
         appContainer.containers.enumerated().forEach { i, container in
             let action = UIAction(title: container.name ?? "Container\(i)",
                                   state: container == appContainer.activeContainer ? .on : .off) { [weak self] _ in
-                guard let self = self else { return }
+                guard let self = self,
+                      container != self.appContainer.activeContainer else {
+                    return
+                }
                 self.activate(container: container)
                 self.configureContainerMenu()
             }
@@ -95,9 +98,18 @@ class ViewController: UIViewController {
             self?.addNewContainer()
         }
         
+        let containerListAction = UIAction(title: "Detail...") { [weak self] _ in
+            guard let self = self else { return }
+            TransitionPresenter.pushAppContainerTableViewController(for: self.appContainer)
+        }
+        
         
         navigationItem.leftBarButtonItem?.menu = UIMenu(options: .displayInline,
-                                                        children: [UIMenu(options: .displayInline, children: actions), addContainerAction])
+                                                        children: [
+                                                            UIMenu(options: .displayInline, children: actions),
+                                                            UIMenu(options: .displayInline, children: [containerListAction]),
+                                                            addContainerAction
+                                                        ])
     }
     
     private func activate(container: Container) {
