@@ -99,6 +99,7 @@ public class AppContainer {
         }
         
         try exportUserDefaults()
+        exportCookies()
         
         try stash()
         
@@ -443,5 +444,16 @@ extension AppContainer {
         let plistData = try PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0)
         try plistData.write(to: plistUrl)
     }
-    
+}
+
+extension AppContainer {
+    private func exportCookies() {
+        let cookieStorage: HTTPCookieStorage
+        if let groupIdentifier = groupIdentifier {
+            cookieStorage = HTTPCookieStorage.sharedCookieStorage(forGroupContainerIdentifier: groupIdentifier)
+        } else {
+            cookieStorage = .shared
+        }
+        cookieStorage.perform(NSSelectorFromString("_saveCookies"))
+    }
 }
