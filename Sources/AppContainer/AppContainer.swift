@@ -405,9 +405,14 @@ extension AppContainer {
     
     private func exportUserDefaults() throws {
         let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
-        let suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
+        var suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
             .filter { $0.hasSuffix(".plist") }
             .compactMap { $0.components(separatedBy: ".plist").first }
+        
+        if let defaultSuite = groupIdentifier ?? Bundle.main.bundleIdentifier,
+           !suites.contains(defaultSuite) {
+            suites.append(defaultSuite)
+        }
 
         cachedSuiteNames = suites
         
