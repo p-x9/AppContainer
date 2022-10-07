@@ -437,7 +437,9 @@ extension AppContainer {
         
         guard let keys = CFPreferencesCopyKeyList(applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost),
               let dictionary = CFPreferencesCopyMultiple(keys, applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) as? Dictionary<String, Any> else {
-            try fileManager.removeItem(at: plistUrl)
+            if fileManager.fileExists(atPath: plistUrl.path) {
+                try fileManager.removeItem(at: plistUrl)
+            }
             return
         }
         
