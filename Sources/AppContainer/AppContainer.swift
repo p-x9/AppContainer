@@ -363,6 +363,18 @@ extension AppContainer {
 // MARK: - UserDefaults
 extension AppContainer {
     private func syncUserDefaults() throws {
+        let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
+        let suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
+            .filter { $0.hasSuffix(".plist") }
+            .compactMap { $0.components(separatedBy: ".plist").first }
+            .filter { !cachedSuiteNames.contains($0) }
+        cachedSuiteNames += suites
+        
+        if let standard = groupIdentifier ?? Bundle.main.bundleIdentifier,
+           !cachedSuiteNames.contains(standard) {
+            cachedSuiteNames.append(standard)
+        }
+        
         cachedSuiteNames.forEach {
             syncUserDefaults(suiteName: $0)
         }
