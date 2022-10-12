@@ -328,6 +328,17 @@ extension AppContainer {
     ///   - src: source path.
     ///   - dst: destination path.
     private func moveContainerContents(src: String, dst: String) throws {
+        if src == dst {
+            return
+        }
+        
+        if groupIdentifier != nil {
+            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames
+            try fileManager.createDirectoryIfNotExisted(atPath: dst, withIntermediateDirectories: true)
+            try fileManager.removeChildContents(atPath: dst, excludes: excludes)
+            try fileManager.moveChildContents(atPath: src, toPath: dst, excludes: excludes)
+        }
+        
         try Container.Directories.allCases.forEach { directory in
             let source = src + "/" + directory.name
             let destination = dst + "/" + directory.name
