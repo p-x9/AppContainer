@@ -224,6 +224,7 @@ excluded:
   - SourcePackages
   - Generated
   - BuildTools
+  - Example
 
 line_length:
   warning: 300
