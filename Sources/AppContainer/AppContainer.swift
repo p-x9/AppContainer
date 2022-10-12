@@ -330,6 +330,17 @@ extension AppContainer {
     ///   - src: source path.
     ///   - dst: destination path.
     private func moveContainerContents(src: String, dst: String) throws {
+        if src == dst {
+            return
+        }
+        
+        if groupIdentifier != nil {
+            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames
+            try fileManager.createDirectoryIfNotExisted(atPath: dst, withIntermediateDirectories: true)
+            try fileManager.removeChildContents(atPath: dst, excludes: excludes)
+            try fileManager.moveChildContents(atPath: src, toPath: dst, excludes: excludes)
+        }
+        
         try Container.Directories.allCases.forEach { directory in
             let source = src + "/" + directory.name
             let destination = dst + "/" + directory.name
@@ -365,6 +376,18 @@ extension AppContainer {
 // MARK: - UserDefaults
 extension AppContainer {
     private func syncUserDefaults() throws {
+        let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
+        let suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
+            .filter { $0.hasSuffix(".plist") }
+            .compactMap { $0.components(separatedBy: ".plist").first }
+            .filter { !cachedSuiteNames.contains($0) }
+        cachedSuiteNames += suites
+        
+        if let standard = groupIdentifier ?? Bundle.main.bundleIdentifier,
+           !cachedSuiteNames.contains(standard) {
+            cachedSuiteNames.append(standard)
+        }
+        
         cachedSuiteNames.forEach {
             syncUserDefaults(suiteName: $0)
         }
