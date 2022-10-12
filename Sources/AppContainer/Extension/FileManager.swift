@@ -9,7 +9,8 @@
 import Foundation
 
 extension FileManager {
-    func createDirectoryIfNotExisted(at url: URL, withIntermediateDirectories: Bool, attributes: [FileAttributeKey : Any]? = nil) throws {
+    // swiftlint:disable:next discouraged_optional_collection
+    func createDirectoryIfNotExisted(at url: URL, withIntermediateDirectories: Bool, attributes: [FileAttributeKey: Any]? = nil) throws {
         guard !self.fileExists(atPath: url.path) else {
             return
         }
@@ -19,7 +20,8 @@ extension FileManager {
                                  attributes: attributes)
     }
 
-    func createDirectoryIfNotExisted(atPath path: String, withIntermediateDirectories: Bool, attributes: [FileAttributeKey : Any]? = nil) throws {
+    // swiftlint:disable:next discouraged_optional_collection
+    func createDirectoryIfNotExisted(atPath path: String, withIntermediateDirectories: Bool, attributes: [FileAttributeKey: Any]? = nil) throws {
         guard !self.fileExists(atPath: path) else {
             return
         }
@@ -118,7 +120,7 @@ extension FileManager {
             }
 
         try contents.forEach {
-            let src = srcPath + "/"  + $0
+            let src = srcPath + "/" + $0
             let dst = dstPath + "/" + $0
 
             try self.copyItem(atPath: src, toPath: dst)

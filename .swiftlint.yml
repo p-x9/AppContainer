@@ -93,7 +93,7 @@ disabled_rules:
 
 opt_in_rules:
   - accessibility_label_for_image
-  - anonymous_argument_in_multiline_closure
+  #- anonymous_argument_in_multiline_closure
   - anyobject_protocol
   - array_init
   - attributes
@@ -201,7 +201,7 @@ opt_in_rules:
   - switch_case_on_newline
   - test_case_accessibility
   - toggle_bool
-  - trailing_closure
+  #- trailing_closure
   - type_contents_order
   - typesafe_array_init
   - unavailable_function

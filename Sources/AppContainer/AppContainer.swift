@@ -384,7 +384,7 @@ extension AppContainer {
             udKeys = [CFString](keys)
         }
 
-        guard let plistDictionary = NSDictionary(contentsOf: plistUrl) as? [String : Any] else {
+        guard let plistDictionary = NSDictionary(contentsOf: plistUrl) as? [String: Any] else {
             udKeys.forEach {
                 CFPreferencesSetAppValue($0, nil, applicationID)
             }
@@ -436,7 +436,7 @@ extension AppContainer {
         CFPreferencesAppSynchronize(applicationID)
 
         guard let keys = CFPreferencesCopyKeyList(applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost),
-              let dictionary = CFPreferencesCopyMultiple(keys, applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) as? Dictionary<String, Any> else {
+              let dictionary = CFPreferencesCopyMultiple(keys, applicationID, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) as? [String: Any] else {
             try fileManager.removeItemIfExisted(at: plistUrl)
             return
         }

@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .library(
             name: "AppContainer",
-            targets: ["AppContainer"]),
+            targets: ["AppContainer"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/realm/SwiftLint.git", branch: "main")
@@ -26,6 +27,7 @@ let package = Package(
         ),
         .testTarget(
             name: "AppContainerTests",
-            dependencies: ["AppContainer"]),
+            dependencies: ["AppContainer"]
+        )
     ]
 )

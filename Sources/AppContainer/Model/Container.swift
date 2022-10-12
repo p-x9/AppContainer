@@ -35,6 +35,7 @@ public struct Container: Codable, Equatable {
 }
 
 extension Container {
+    /// check if default self is container.
     public var isDefault: Bool {
         uuid == UUID.zero.uuidString
     }
