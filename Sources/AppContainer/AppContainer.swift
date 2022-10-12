@@ -1,6 +1,8 @@
 import Foundation
 
+/// class for  management container
 public class AppContainer {
+    /// standard container manager
     public static let standard = AppContainer()
 
     private let fileManager = FileManager.default
