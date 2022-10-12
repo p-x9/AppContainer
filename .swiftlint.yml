@@ -15,6 +15,7 @@ disabled_rules:
   #- discouraged_direct_init
   #- duplicate_enum_cases
   #- duplicate_imports
+  #- duplicated_key_in_dictionary_literal
   #- dynamic_inline
   #- empty_enum_arguments
   #- empty_parameters
@@ -38,6 +39,7 @@ disabled_rules:
   #- legacy_constructor
   #- legacy_hashing
   #- legacy_nsgeometry_functions
+  #- legacy_random
   #- line_length
   #- mark
   #- multiple_closures_with_trailing_closure
@@ -60,6 +62,7 @@ disabled_rules:
   #- redundant_string_enum_value
   #- redundant_void_return
   #- return_arrow_whitespace
+  #- self_in_property_initialization
   #- shorthand_operator
   #- statement_position
   #- superfluous_disable_command
@@ -72,6 +75,7 @@ disabled_rules:
   #- trailing_whitespace
   #- type_body_length
   #- type_name
+  #- unavailable_condition
   #- unneeded_break_in_switch
   #- unused_capture_list
   #- unused_closure_parameter
@@ -82,12 +86,14 @@ disabled_rules:
   #- valid_ibinspectable
   #- vertical_parameter_alignment
   #- vertical_whitespace
+  #- void_function_in_ternary
   #- void_return
-  #- weak_delegate
   #- xctfail_message
 
 
 opt_in_rules:
+  - accessibility_label_for_image
+  - anonymous_argument_in_multiline_closure
   - anyobject_protocol
   - array_init
   - attributes
@@ -97,6 +103,7 @@ opt_in_rules:
   - closure_end_indentation
   - closure_spacing
   - collection_alignment
+  - comma_inheritance
   #- conditional_returns_on_newline
   - contains_over_filter_count
   - contains_over_filter_is_empty
@@ -105,6 +112,7 @@ opt_in_rules:
   - convenience_type
   - discarded_notification_center_observer
   - discouraged_assert
+  - discouraged_none_name
   #- discouraged_object_literal
   - discouraged_optional_boolean
   - discouraged_optional_collection
@@ -140,7 +148,6 @@ opt_in_rules:
   - last_where
   - legacy_multiple
   #- legacy_objc_type
-  - legacy_random
   - let_var_whitespace
   - literal_expression_end_indentation
   - lower_acl_than_parent
@@ -165,6 +172,7 @@ opt_in_rules:
   - override_in_extension
   - pattern_matching_keywords
   - prefer_nimble
+  - prefer_self_in_static_references
   - prefer_self_type_over_type_of_self
   - prefer_zero_over_explicit_init
   #- prefixed_toplevel_constant
@@ -182,6 +190,8 @@ opt_in_rules:
   - redundant_type_annotation
   #- required_deinit
   - required_enum_case
+  - return_value_from_void_function
+  - self_binding
   - single_test_class
   - sorted_first_last
   #- sorted_imports
@@ -193,6 +203,7 @@ opt_in_rules:
   - toggle_bool
   - trailing_closure
   - type_contents_order
+  - typesafe_array_init
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
   - unowned_variable_capture
@@ -203,6 +214,7 @@ opt_in_rules:
   #- vertical_whitespace_between_cases
   #- vertical_whitespace_closing_braces
   #- vertical_whitespace_opening_braces
+  - weak_delegate
   - xct_specific_matcher
   - yoda_condition
 
