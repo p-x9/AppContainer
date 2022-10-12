@@ -13,11 +13,17 @@ let package = Package(
             name: "AppContainer",
             targets: ["AppContainer"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", branch: "main")
+    ],
     targets: [
         .target(
             name: "AppContainer",
-            dependencies: []),
+            dependencies: [],
+            plugins: [
+                .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
+            ]
+        ),
         .testTarget(
             name: "AppContainerTests",
             dependencies: ["AppContainer"]),
