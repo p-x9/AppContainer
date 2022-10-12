@@ -14,7 +14,7 @@ enum Constants {
     static let appContainerSettingsPlistName = "settings.plist"
 
     static let containerInfoPlistName = "container.plist"
-    
+
     static let appGroupExcludeFileNames = [
         ".com.apple.mobile_container_manager.metadata.plist",
         "container.plist"
