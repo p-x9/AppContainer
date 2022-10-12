@@ -13,19 +13,19 @@ public struct Container: Codable, Equatable {
     public var name: String?
     /// container unique id
     public let uuid: String
-    
+
     /// description
     public var description: String?
-    
+
     /// created date
     public let createdAt: Date?
-    
+
     /// last activated date
     public var lastActivatedDate: Date?
-    
+
     /// activated count
     public var activatedCount: Int? = 0
-    
+
     init(name: String?, uuid: String, description: String? = nil) {
         self.name = name
         self.uuid = uuid
@@ -38,18 +38,18 @@ extension Container {
     public var isDefault: Bool {
         uuid == UUID.zero.uuidString
     }
-    
+
     // container relative path
     private var relativePath: String {
         "Library/" + Constants.containerFolderName + "/" + uuid
     }
-    
+
     /// Container Directory url
     /// - Parameter homeUrl: home directory url.
     public func url(_ homeUrl: URL) -> URL {
         homeUrl.appendingPathComponent(relativePath)
     }
-    
+
     /// Container Directory path
     /// - Parameter homePath: home directory path.
     public func path(_ homePath: String) -> String {
@@ -72,11 +72,11 @@ extension Container {
         case documents = "Documents"
         //        case systemData = "SystemData"
         case tmp = "tmp"
-        
+
         var name: String {
             rawValue
         }
-        
+
         var excludes: [String] {
             switch self {
             case .library:
@@ -85,7 +85,7 @@ extension Container {
                 return []
             }
         }
-        
+
         static var allNames: [String] {
             allCases.map(\.name)
         }
