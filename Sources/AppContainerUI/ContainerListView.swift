@@ -22,7 +22,7 @@ public struct ContainerListView: View {
     
     @State var containers: [Container]
     
-    public init(appContainer: AppContainer, title: String) {
+    public init(appContainer: AppContainer, title: String = "Containers") {
         self.appContainer = appContainer
         self.title = title
         self._containers = .init(initialValue: appContainer.containers)
