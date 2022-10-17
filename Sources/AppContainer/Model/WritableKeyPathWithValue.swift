@@ -35,7 +35,7 @@ public struct WritableKeyPathValueApplier<Root> {
 
 
 extension WritableKeyPathWithValue {
-    init(_ keyValueApplier: WritableKeyPathValueApplier<Root>, value: Any) {
+    public init(_ keyValueApplier: WritableKeyPathValueApplier<Root>, value: Any) {
         self.keyPath = keyValueApplier.keyPath
         self.value = value
         self.apply = {
