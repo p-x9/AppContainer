@@ -14,10 +14,10 @@ import AppContainer
 @available(iOS 14, *)
 public class ContainerInfoViewController: UIViewController {
     
-    public let appContainer: AppContainer
+    public let appContainer: AppContainer?
     private let container: Container //FIXME:uuid
     
-    public init(appContainer: AppContainer, container: Container) {
+    public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
         self.container = container
         

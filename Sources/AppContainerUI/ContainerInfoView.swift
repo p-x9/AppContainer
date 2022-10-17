@@ -74,12 +74,14 @@ fileprivate enum Presentation: View, Hashable, Identifiable {
 public struct ContainerInfoView: View {
     
     let appContainer: AppContainer?
+    let isEditable: Bool
     @State private var container: Container
     
     @State private var presentation: Presentation?
     
     public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
+        self.isEditable = appContainer != nil
         self._container = .init(initialValue: container)
     }
     
@@ -87,7 +89,9 @@ public struct ContainerInfoView: View {
         List {
             informationSection
         }
-        .sheet(item: $presentation) { $0 }
+        .when(isEditable) {
+            $0.sheet(item: $presentation) { $0 }
+        }
         .navigationTitle(container.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
     }
