@@ -50,7 +50,7 @@ public struct ContainerListView: View {
 }
 
 #if DEBUG
-@available(iOS 16, *)
+@available(iOS 14, *)
 struct ContainerListView_Preview: PreviewProvider {
     static var previews: some View {
         let containers: [Container] = [

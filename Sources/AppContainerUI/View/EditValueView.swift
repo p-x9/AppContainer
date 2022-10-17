@@ -120,7 +120,7 @@ struct EditValueView<Value>: View {
 }
 
 #if DEBUG
-@available(iOS 13, *)
+@available(iOS 14, *)
 struct EditValueView_Preview: PreviewProvider {
     static var previews: some View {
         let container: Container =  .init(name: "Default",
