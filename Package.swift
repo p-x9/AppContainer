@@ -1,5 +1,4 @@
 // swift-tools-version: 5.6
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -11,15 +10,26 @@ let package = Package(
     products: [
         .library(
             name: "AppContainer",
-            targets: ["AppContainer"]),
+            targets: ["AppContainer"]
+        ),
+        .library(
+            name: "AppContainerUI",
+            targets: ["AppContainerUI"]
+        )
     ],
     dependencies: [],
     targets: [
         .target(
             name: "AppContainer",
-            dependencies: []),
+            dependencies: []
+        ),
+        .target(
+            name: "AppContainerUI",
+            dependencies: ["AppContainer"]
+        ),
         .testTarget(
             name: "AppContainerTests",
-            dependencies: ["AppContainer"]),
+            dependencies: ["AppContainer"]
+        ),
     ]
 )
