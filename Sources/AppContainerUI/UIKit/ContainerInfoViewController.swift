@@ -47,10 +47,12 @@ public class ContainerInfoViewController: UIViewController {
         vc.didMove(toParent: self)
         
         vc.view.translatesAutoresizingMaskIntoConstraints = false
-        vc.view.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
-        vc.view.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
-        vc.view.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        vc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        NSLayoutConstraint.activate([
+            vc.view.leftAnchor.constraint(equalTo: view.leftAnchor),
+            vc.view.rightAnchor.constraint(equalTo: view.rightAnchor),
+            vc.view.topAnchor.constraint(equalTo: view.topAnchor),
+            vc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
