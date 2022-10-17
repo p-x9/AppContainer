@@ -29,7 +29,7 @@ extension UserDefaults {
                 return "Double"
             case .string:
                 return "String"
-            case bool:
+            case .bool:
                 return "Bool"
             case .data:
                 return "Data"
