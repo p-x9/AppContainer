@@ -7,34 +7,34 @@
 //
 
 import SwiftUI
-import AppContainer
 
 @available(iOS 14, *)
-struct EditValueView<Value>: View {
-    var appContainer: AppContainer?
-    let container: Container
+struct EditValueView<Root, Value>: View {
+    let target: Root
     let key: String
-    let keyPath: PartialKeyPath<Container> //WritableKeyPath<Container, Value>
+    let keyPath: PartialKeyPath<Root> //WritableKeyPath<Root, Value>
+    private var _onUpdate: ((Root, Value) -> Void)?
     private var isWrappedOptional = false
     
     @State private var value: Value
     @Environment(\.presentationMode) private var presentationMode
     
-    init(container: Container, key: String, keyPath: WritableKeyPath<Container, Value>) {
-        self.container = container
+    @_disfavoredOverload
+    init(_ target: Root, key: String, keyPath: WritableKeyPath<Root, Value>) {
+        self.target = target
         self.key = key
         self.keyPath = keyPath
         
-        self._value = .init(initialValue: container[keyPath: keyPath])
+        self._value = .init(initialValue: target[keyPath: keyPath])
     }
     
-    init(container: Container, key: String, keyPath: WritableKeyPath<Container, Optional<Value>>) where Value: DefaultRepresentable {
-        self.container = container
+    init(_ target: Root, key: String, keyPath: WritableKeyPath<Root, Optional<Value>>) where Value: DefaultRepresentable {
+        self.target = target
         self.key = key
         self.keyPath = keyPath
         self.isWrappedOptional = true
         
-        self._value = .init(initialValue: container[keyPath: keyPath] ?? Value.default)
+        self._value = .init(initialValue: target[keyPath: keyPath] ?? Value.default)
     }
     
     var body: some View {
@@ -97,40 +97,31 @@ struct EditValueView<Value>: View {
         }
     }
     
-    func set(appContainer: AppContainer?) -> Self {
+    func onUpdate(_ onUpdate: ((Root, Value) -> Void)?) -> Self {
         var new = self
-        new.appContainer = appContainer
+        new._onUpdate = onUpdate
         return new
     }
     
-    func save() {
-        if isWrappedOptional {
-            guard let keyPath = keyPath as? WritableKeyPath<Container, Optional<Value>> else {
-                return
-            }
-            try? appContainer?.updateInfo(of: container, keyValue: .init(keyPath, value))
-        } else {
-            guard let keyPath = keyPath as? WritableKeyPath<Container, Value> else {
-                return
-            }
-            try? appContainer?.updateInfo(of: container, keyValue: .init(keyPath, value))
-        }
-       
+    private func save() {
+        _onUpdate?(target, value)
     }
 }
 
 #if DEBUG
+import AppContainer
+
 @available(iOS 14, *)
 struct EditValueView_Preview: PreviewProvider {
     static var previews: some View {
-        let container: Container =  .init(name: "Default",
+        let target: Container =  .init(name: "Default",
                                           uuid: UUID().uuidString,
                                           description: "This container is default.\nこんにちは")
         Group {
-            EditValueView(container: container,
-                          key: "name", keyPath: \.name)
-            EditValueView(container: container,
-                          key: "lastActivatedDate", keyPath: \.lastActivatedDate)
+            EditValueView(target,
+                          key: "name", keyPath: \Container.name)
+            EditValueView(target,
+                          key: "lastActivatedDate", keyPath: \Container.lastActivatedDate)
         }
     }
 }
