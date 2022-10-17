@@ -8,35 +8,35 @@
 
 import Foundation
 
-protocol DefaultRepresentable {
-    static var `default`: Self { get }
+public protocol DefaultRepresentable {
+    static var defaultValue: Self { get }
 }
 
 extension String: DefaultRepresentable {
-    static var `default`: String {
+    public static var defaultValue: String {
         ""
     }
 }
 extension Int: DefaultRepresentable {
-    static var `default`: Int {
+    public static var defaultValue: Int {
         0
     }
 }
 
 extension Double: DefaultRepresentable {
-    static var `default`: Double {
+    public static var defaultValue: Double {
         0.0
     }
 }
 
 extension Bool: DefaultRepresentable {
-    static var `default`: Bool {
+    public static var defaultValue: Bool {
         false
     }
 }
 
 extension Date: DefaultRepresentable {
-    static var `default`: Date {
+    public static var defaultValue: Date {
         .init()
     }
 }

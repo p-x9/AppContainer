@@ -34,7 +34,7 @@ struct EditValueView<Root, Value>: View {
         self.keyPath = keyPath
         self.isWrappedOptional = true
         
-        self._value = .init(initialValue: target[keyPath: keyPath] ?? Value.default)
+        self._value = .init(initialValue: target[keyPath: keyPath] ?? Value.defaultValue)
     }
     
     var body: some View {
