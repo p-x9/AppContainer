@@ -29,23 +29,21 @@ public struct ContainerListView: View {
     }
     
     public var body: some View {
-        NavigationView {
-            List {
-                ForEach(containers) { container in
-                    NavigationLink {
-                        ContainerInfoView(appContainer: appContainer,
-                                          container: container)
-                    } label: {
-                        ContainerRowView(container: container)
-                    }
+        List {
+            ForEach(containers) { container in
+                NavigationLink {
+                    ContainerInfoView(appContainer: appContainer,
+                                      container: container)
+                } label: {
+                    ContainerRowView(container: container)
                 }
             }
-            .onAppear {
-                containers = appContainer.containers
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
         }
+        .onAppear {
+            containers = appContainer.containers
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
