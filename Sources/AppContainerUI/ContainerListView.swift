@@ -35,7 +35,9 @@ public struct ContainerListView: View {
                     ContainerInfoView(appContainer: appContainer,
                                       container: container)
                 } label: {
-                    ContainerRowView(container: container)
+                    let activeContainer = appContainer.activeContainer
+                    let isActive = activeContainer?.uuid == container.uuid
+                    ContainerRowView(container: container, isActive: isActive)
                 }
             }
         }

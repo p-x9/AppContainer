@@ -13,12 +13,24 @@ import AppContainer
 struct ContainerRowView: View {
     
     private var container: Container
+    private var isActive: Bool
 
-    init(container: Container) {
+    init(container: Container, isActive: Bool = false) {
         self.container = container
+        self.isActive = isActive
     }
     
     var body: some View {
+        HStack(alignment: .center) {
+            content
+            if isActive {
+                Color(UIColor.green)
+                    .frame(width: 8, height: 8)
+            }
+        }
+    }
+    
+    var content: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 Text(container.name ?? "")
@@ -26,7 +38,6 @@ struct ContainerRowView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
-               
             }
             
             HStack {
@@ -46,8 +57,12 @@ struct ContainerRowView_Preview: PreviewProvider {
         let container: Container =  .init(name: "Default",
                                           uuid: UUID().uuidString,
                                           description: "This container is default.\nこんにちは")
-        ContainerRowView(container: container)
-            .previewLayout(.sizeThatFits)
+        Group {
+            ContainerRowView(container: container)
+                .previewLayout(.sizeThatFits)
+            ContainerRowView(container: container, isActive: true)
+                .previewLayout(.sizeThatFits)
+        }
     }
 }
 #endif
