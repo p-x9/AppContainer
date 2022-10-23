@@ -1,12 +1,30 @@
 {
   "pins" : [
     {
+      "identity" : "editvalueview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/EditValueView.git",
+      "state" : {
+        "revision" : "65e8698bac775a38ba0f58e903bde8a4a980644c",
+        "version" : "0.0.1"
+      }
+    },
+    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
         "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
         "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swiftuicolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/SwiftUIColor.git",
+      "state" : {
+        "revision" : "3696e78e84bc140dca6f865c297e1a3b405a882b",
+        "version" : "0.0.4"
       }
     }
   ],

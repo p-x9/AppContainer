@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "AppContainer",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v14)
     ],
     products: [
         .library(
@@ -17,7 +17,9 @@ let package = Package(
             targets: ["AppContainerUI"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/p-x9/EditValueView.git", exact: "0.0.1")
+    ],
     targets: [
         .target(
             name: "AppContainer",
@@ -25,7 +27,10 @@ let package = Package(
         ),
         .target(
             name: "AppContainerUI",
-            dependencies: ["AppContainer"]
+            dependencies: [
+                "AppContainer",
+                .product(name: "EditValueView", package: "EditValueView")
+            ]
         ),
         .testTarget(
             name: "AppContainerTests",

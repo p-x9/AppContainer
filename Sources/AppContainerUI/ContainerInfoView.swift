@@ -8,67 +8,7 @@
 
 import SwiftUI
 import AppContainer
-
-extension Container: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(uuid)
-    }
-}
-
-@available(iOS 14, *)
-fileprivate enum Presentation: View, Hashable, Identifiable {
-    struct EditItem<Value>: Hashable where Value: Hashable {
-        static func == (lhs: Presentation.EditItem<Value>, rhs: Presentation.EditItem<Value>) -> Bool {
-            lhs.container == rhs.container &&
-            lhs.keyName == rhs.keyName &&
-            lhs.keyPath == rhs.keyPath
-        }
-        
-        let container: Container
-        let keyName: String
-        let keyPath: WritableKeyPath<Container, Value>
-        var onUpdate: ((Value) -> Void)?
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(container)
-            hasher.combine(keyName)
-            hasher.combine(keyPath)
-        }
-    }
-    
-    case text(EditItem<String>)
-    case date(EditItem<Date>)
-    case optionalText(EditItem<String?>)
-    case optionalDate(EditItem<Date?>)
-    
-    var id: Self { self }
-    
-    @ViewBuilder
-    var body: some View {
-        switch self {
-        case let .text(e):
-            EditValueView(e.container, key: e.keyName, keyPath: e.keyPath)
-                .onUpdate { _, value in
-                    e.onUpdate?(value)
-                }
-        case let .date(e):
-            EditValueView(e.container, key: e.keyName, keyPath: e.keyPath)
-                .onUpdate { _, value in
-                    e.onUpdate?(value)
-                }
-        case let .optionalText(e):
-            EditValueView(e.container, key: e.keyName, keyPath: e.keyPath)
-                .onUpdate { _, value in
-                    e.onUpdate?(value)
-                }
-        case let .optionalDate(e):
-            EditValueView(e.container, key: e.keyName, keyPath: e.keyPath)
-                .onUpdate { _, value in
-                    e.onUpdate?(value)
-                }
-        }
-    }
-}
+import EditValueView
 
 @available(iOS 14, *)
 public struct ContainerInfoView: View {
@@ -79,8 +19,6 @@ public struct ContainerInfoView: View {
     }
     
     @State private var container: Container
-    
-    @State private var presentation: Presentation?
     
     public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
@@ -97,41 +35,44 @@ public struct ContainerInfoView: View {
                 }
             }
         }
-        .when(isEditable) {
-            $0.sheet(item: $presentation) { $0 }
-        }
         .navigationTitle(container.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
     }
     
     var informationSection: some View {
         Section(header: Text("Informations")) {
-            KeyValueRowView(key: "Name", value: container.name) {
-                let editItem = Presentation.EditItem(container: container, keyName: "name", keyPath: \.name) {
-                    save(keyPath: \.name, value: $0)
-                }
-                self.presentation = .optionalText(editItem)
+            WritableKeyValueRowView(key: "Name", value: container.name, isEditable: isEditable) {
+                EditValueView(container, key: "name", keyPath: \.name)
+                    .onUpdate {_, value in
+                        save(keyPath: \.name, value: value)
+                    }
             }
+            
             KeyValueRowView(key: "UUID", value: container.uuid)
             KeyValueRowView(key: "isDefault", value: container.isDefault)
             
-            KeyValueRowView(key: "Description", value: container.description) {
-                let editItem = Presentation.EditItem(container: container, keyName: "description", keyPath: \.description) {
-                    save(keyPath: \.description, value: $0)
-                }
-                self.presentation = .optionalText(editItem)
+            WritableKeyValueRowView(key: "Description", value: container.description, isEditable: isEditable) {
+                EditValueView(container, key: "description", keyPath: \.description)
+                    .onUpdate {_, value in
+                        save(keyPath: \.description, value: value)
+                    }
             }
             
             KeyValueRowView(key: "Created At", value: container.createdAt)
             
-            KeyValueRowView(key: "Last Activated Date", value: container.lastActivatedDate) {
-                let editItem = Presentation.EditItem(container: container, keyName: "lastActivatedDate", keyPath: \.lastActivatedDate) {
-                    save(keyPath: \.lastActivatedDate, value: $0)
-                }
-                self.presentation = .optionalDate(editItem)
+            WritableKeyValueRowView(key: "Last Activated Date", value: container.lastActivatedDate, isEditable: isEditable) {
+                EditValueView(container, key: "lastActivatedDate", keyPath: \.lastActivatedDate)
+                    .onUpdate { _, value in
+                        save(keyPath: \.lastActivatedDate, value: value)
+                    }
             }
             
-            KeyValueRowView(key: "Activated Count", value: container.activatedCount)
+            WritableKeyValueRowView(key: "Activated Count", value: container.activatedCount, isEditable: isEditable) {
+                EditValueView(container, key: "activatedCount", keyPath: \.activatedCount)
+                    .onUpdate {_, value in
+                    save(keyPath: \.activatedCount, value: value)
+                }
+            }
         }
     }
     
