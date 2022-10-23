@@ -20,6 +20,27 @@ extension UserDefaults {
         indirect case dictionary(ValueType, ValueType)
         
         case unknown
+        
+        var typeName: String {
+            switch self {
+            case .int:
+                return "Int"
+            case .double:
+                return "Double"
+            case .string:
+                return "String"
+            case .bool:
+                return "Bool"
+            case .data:
+                return "Data"
+            case let .array(content):
+                return "[\(content.typeName)]"
+            case let .dictionary(key, value):
+                return "[\(key.typeName): \(value.typeName)]"
+            case .unknown:
+                return "Any"
+            }
+        }
     }
     
     func extractValueType(forKey key: String) -> ValueType? {
@@ -45,7 +66,7 @@ extension UserDefaults {
             }
             return .array(type)
         }
-        if let dictionary = value as? Dictionary<AnyHashable, AnyHashable> {
+        if let dictionary = value as? Dictionary<AnyHashable, Any> {
             var key: ValueType = .unknown
             var value: ValueType = .unknown
             if let data = dictionary.first {

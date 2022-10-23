@@ -26,7 +26,7 @@ public struct Container: Codable, Equatable {
     /// activated count
     public var activatedCount: Int? = 0
 
-    init(name: String?, uuid: String, description: String? = nil) {
+    public init(name: String?, uuid: String, description: String? = nil) {
         self.name = name
         self.uuid = uuid
         self.description = description

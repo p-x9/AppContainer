@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "editvalueview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/EditValueView.git",
+      "state" : {
+        "revision" : "16e74e228f320c0a2c55571313f06989e97c1ab4",
+        "version" : "0.0.2"
+      }
+    },
+    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
@@ -78,6 +87,15 @@
       "state" : {
         "revision" : "01835dc202670b5bb90d07f3eae41867e9ed29f6",
         "version" : "5.0.1"
+      }
+    },
+    {
+      "identity" : "swiftuicolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/SwiftUIColor.git",
+      "state" : {
+        "revision" : "3696e78e84bc140dca6f865c297e1a3b405a882b",
+        "version" : "0.0.4"
       }
     }
   ],
