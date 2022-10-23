@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/p-x9/EditValueView.git",
       "state" : {
-        "revision" : "65e8698bac775a38ba0f58e903bde8a4a980644c",
-        "version" : "0.0.1"
+        "revision" : "16e74e228f320c0a2c55571313f06989e97c1ab4",
+        "version" : "0.0.2"
       }
     },
     {
