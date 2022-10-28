@@ -15,16 +15,16 @@ struct WritableKeyValueRowView<Content>: View where Content: View {
     let value: Any?
     let isEditable: Bool
     var destination: Content?
-    
+
     @State private var isPresentedSheet = false
-    
+
     init(key: String, value: Any?, isEditable: Bool, destination: (() -> Content)? = nil) {
         self.key = key
         self.value = value
         self.isEditable = isEditable
         self.destination = destination?()
     }
-    
+
     var body: some View {
         Button {
             isPresentedSheet.toggle()
@@ -44,7 +44,7 @@ struct WritableKeyValueRowView<Content>: View where Content: View {
             }
         }
     }
-    
+
     private func stringValue() -> String {
         var stringValue = String()
         if let value = value as? CustomStringConvertible {

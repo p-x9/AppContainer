@@ -19,15 +19,15 @@ extension Container: Identifiable {
 public struct ContainerListView: View {
     let appContainer: AppContainer
     let title: String
-    
+
     @State var containers: [Container]
-    
+
     public init(appContainer: AppContainer, title: String = "Containers") {
         self.appContainer = appContainer
         self.title = title
         self._containers = .init(initialValue: appContainer.containers)
     }
-    
+
     public var body: some View {
         List {
             ForEach(containers) { container in
@@ -62,7 +62,7 @@ struct ContainerListView_Preview: PreviewProvider {
             .init(name: "Debug2", uuid: UUID().uuidString),
             .init(name: "Debug3", uuid: UUID().uuidString),
         ]
-        
+
         NavigationView {
             List {
                 ForEach(containers) { container in

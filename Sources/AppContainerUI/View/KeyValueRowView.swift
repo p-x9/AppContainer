@@ -13,7 +13,7 @@ struct KeyValueRowView: View {
     let key: String
     let value: Any?
     var action: (() -> Void)?
-    
+
     var body: some View {
         Button {
             action?()
@@ -29,7 +29,7 @@ struct KeyValueRowView: View {
         }
 
     }
-    
+
     private func stringValue() -> String {
         var stringValue = String()
         if let value = value as? CustomStringConvertible {

@@ -13,37 +13,37 @@ import AppContainer
 
 @available(iOS 14, *)
 public class ContainerListViewController: UIViewController {
-    
+
     public let appContainer: AppContainer
-    
+
     public init(appContainer: AppContainer) {
         self.appContainer = appContainer
-        
+
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupChildViewController()
     }
-    
+
     private func setupChildViewController() {
         let containerListView = ContainerListView(
             appContainer: appContainer,
             title: title ?? ""
         )
-        
+
         let vc = UIHostingController(rootView: containerListView)
         addChild(vc)
         view.addSubview(vc.view)
         vc.didMove(toParent: self)
-        
+
         vc.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             vc.view.leftAnchor.constraint(equalTo: view.leftAnchor),

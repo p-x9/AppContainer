@@ -16,7 +16,7 @@ public struct WritableKeyPathWithValue<Root> {
     public let value: Any
     /// assign value
     public let apply: (inout Root) -> Void
-    
+
     /// initialize with keyPath and value
     public init<Value>(_ keyPath: WritableKeyPath<Root, Value>, _ value: Value) {
         self.keyPath = keyPath
@@ -28,7 +28,7 @@ public struct WritableKeyPathWithValue<Root> {
 public struct WritableKeyPathValueApplier<Root> {
     public let keyPath: PartialKeyPath<Root>
     public let apply: (Any, inout Root) -> Void
-    
+
     public init<Value>(_ keyPath: WritableKeyPath<Root,Value>) {
         self.keyPath = keyPath
         self.apply = {
@@ -37,7 +37,6 @@ public struct WritableKeyPathValueApplier<Root> {
         }
     }
 }
-
 
 extension WritableKeyPathWithValue {
     public init(_ keyValueApplier: WritableKeyPathValueApplier<Root>, value: Any) {
@@ -48,4 +47,3 @@ extension WritableKeyPathWithValue {
         }
     }
 }
-
