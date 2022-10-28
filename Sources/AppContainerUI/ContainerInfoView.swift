@@ -70,18 +70,18 @@ public struct ContainerInfoView: View {
             WritableKeyValueRowView(key: "Activated Count", value: container.activatedCount, isEditable: isEditable) {
                 EditValueView(container, key: "activatedCount", keyPath: \.activatedCount)
                     .onUpdate {_, value in
-                    save(keyPath: \.activatedCount, value: value)
-                }
+                        save(keyPath: \.activatedCount, value: value)
+                    }
             }
         }
     }
 
     func save<Value>(keyPath: WritableKeyPath<Container, Value>, value: Value) {
         try? appContainer?.updateInfo(of: container,
-                                 keyValue: .init(keyPath, value))
+                                      keyValue: .init(keyPath, value))
         onUpdate()
     }
-    
+
     func onUpdate() {
         guard let appContainer = appContainer,
               let container = appContainer.containers.first(where: { container in
@@ -98,8 +98,8 @@ public struct ContainerInfoView: View {
 struct ContainerInfoView_Preview: PreviewProvider {
     static var previews: some View {
         let container: Container = .init(name: "Default",
-                                          uuid: UUID().uuidString,
-                                          description: "This container is default.\nこんにちは")
+                                         uuid: UUID().uuidString,
+                                         description: "This container is default.\nこんにちは")
         NavigationView {
             ContainerInfoView(appContainer: nil, container: container)
         }

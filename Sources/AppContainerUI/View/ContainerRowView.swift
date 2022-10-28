@@ -55,8 +55,8 @@ struct ContainerRowView: View {
 struct ContainerRowView_Preview: PreviewProvider {
     static var previews: some View {
         let container: Container = .init(name: "Default",
-                                          uuid: UUID().uuidString,
-                                          description: "This container is default.\nこんにちは")
+                                         uuid: UUID().uuidString,
+                                         description: "This container is default.\nこんにちは")
         Group {
             ContainerRowView(container: container)
                 .previewLayout(.sizeThatFits)

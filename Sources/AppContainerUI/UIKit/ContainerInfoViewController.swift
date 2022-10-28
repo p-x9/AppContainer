@@ -15,7 +15,7 @@ import AppContainer
 public class ContainerInfoViewController: UIViewController {
 
     public let appContainer: AppContainer?
-    private let container: Container //FIXME:uuid
+    private let container: Container // FIXME:uuid
 
     public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
@@ -29,7 +29,7 @@ public class ContainerInfoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         setupChildViewController()

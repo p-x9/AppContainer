@@ -11,6 +11,7 @@ import AppContainer
 
 extension Container: Identifiable {
     public var id: UUID {
+        // swiftlint:disable:next force_unwrapping
         UUID(uuidString: uuid)!
     }
 }
@@ -58,9 +59,9 @@ struct ContainerListView_Preview: PreviewProvider {
                   uuid: UUID().uuidString,
                   description: "This container is default.\nこんにちは"),
             .init(name: "Debug1", uuid: UUID().uuidString,
-                 description: "This container is Debug1. \nHello\nHello"),
+                  description: "This container is Debug1. \nHello\nHello"),
             .init(name: "Debug2", uuid: UUID().uuidString),
-            .init(name: "Debug3", uuid: UUID().uuidString),
+            .init(name: "Debug3", uuid: UUID().uuidString)
         ]
 
         NavigationView {
