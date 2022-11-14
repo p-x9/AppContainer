@@ -18,7 +18,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/p-x9/EditValueView.git", exact: "0.0.2")
+        .package(url: "https://github.com/p-x9/EditValueView.git", exact: "0.0.2"),
+        .package(url: "https://github.com/p-x9/KeyPathValue.git", exact: "0.0.1")
     ],
     targets: [
         .target(
@@ -29,7 +30,8 @@ let package = Package(
             name: "AppContainerUI",
             dependencies: [
                 "AppContainer",
-                .product(name: "EditValueView", package: "EditValueView")
+                .product(name: "EditValueView", package: "EditValueView"),
+                .product(name: "KeyPathValue", package: "KeyPathValue")
             ]
         ),
         .testTarget(
