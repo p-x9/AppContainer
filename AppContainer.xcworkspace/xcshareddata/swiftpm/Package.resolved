@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "keypathvalue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/KeyPathValue.git",
+      "state" : {
+        "revision" : "6aeb41d6c5564ae1f18e8b7a4bc5733d739558e3",
+        "version" : "0.0.1"
+      }
+    },
+    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",

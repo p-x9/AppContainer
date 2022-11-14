@@ -24,14 +24,15 @@ let package = Package(
     targets: [
         .target(
             name: "AppContainer",
-            dependencies: []
+            dependencies: [
+                .product(name: "KeyPathValue", package: "KeyPathValue")
+            ]
         ),
         .target(
             name: "AppContainerUI",
             dependencies: [
                 "AppContainer",
-                .product(name: "EditValueView", package: "EditValueView"),
-                .product(name: "KeyPathValue", package: "KeyPathValue")
+                .product(name: "EditValueView", package: "EditValueView")
             ]
         ),
         .testTarget(
