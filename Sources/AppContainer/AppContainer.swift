@@ -1,4 +1,5 @@
 import Foundation
+import KeyPathValue
 
 public class AppContainer {
     public static let standard = AppContainer()
