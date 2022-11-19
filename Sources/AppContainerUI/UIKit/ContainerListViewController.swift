@@ -27,7 +27,7 @@ public class ContainerListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         setupChildViewController()

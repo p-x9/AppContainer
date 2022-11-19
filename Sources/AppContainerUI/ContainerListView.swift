@@ -9,13 +9,6 @@
 import SwiftUI
 import AppContainer
 
-extension Container: Identifiable {
-    public var id: UUID {
-        // swiftlint:disable:next force_unwrapping
-        UUID(uuidString: uuid)!
-    }
-}
-
 @available(iOS 14, *)
 public struct ContainerListView: View {
     let appContainer: AppContainer
@@ -47,6 +40,13 @@ public struct ContainerListView: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension Container: Identifiable {
+    public var id: UUID {
+        // swiftlint:disable:next force_unwrapping
+        UUID(uuidString: uuid)!
     }
 }
 
