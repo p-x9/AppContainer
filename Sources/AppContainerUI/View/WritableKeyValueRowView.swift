@@ -18,6 +18,7 @@ struct WritableKeyValueRowView<Content>: View where Content: View {
 
     @State private var isPresentedSheet = false
 
+    // swiftlint:disable:next type_contents_order
     init(key: String, value: Any?, isEditable: Bool, destination: (() -> Content)? = nil) {
         self.key = key
         self.value = value

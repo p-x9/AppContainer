@@ -16,6 +16,7 @@ public struct ContainerListView: View {
 
     @State var containers: [Container]
 
+    // swiftlint:disable:next type_contents_order
     public init(appContainer: AppContainer, title: String = "Containers") {
         self.appContainer = appContainer
         self.title = title

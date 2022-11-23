@@ -15,6 +15,7 @@ struct ContainerRowView: View {
     private var container: Container
     private var isActive: Bool
 
+    // swiftlint:disable:next type_contents_order
     init(container: Container, isActive: Bool = false) {
         self.container = container
         self.isActive = isActive
