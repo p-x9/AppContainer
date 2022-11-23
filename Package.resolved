@@ -19,12 +19,20 @@
       }
     },
     {
+      "identity" : "keypathvalue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/KeyPathValue.git",
+      "state" : {
+        "revision" : "6aeb41d6c5564ae1f18e8b7a4bc5733d739558e3",
+        "version" : "0.0.1"
+      }
+    },
+    {
       "identity" : "sourcekitten",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/SourceKitten.git",
       "state" : {
-        "revision" : "b5f9bb749057dd396e93f97956bef64672bc2a04",
-        "version" : "0.33.0"
+        "revision" : "a9e6df65d8e31e0fa6e8a05ffe40ecd54a645871"
       }
     },
     {
@@ -41,7 +49,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "26bf2172cc5b7d54f28b10d18e8b5de351b5c4a3"
+        "revision" : "b0b5f8d73ff5ddc0c1d6ececcc094995e8bf57dd"
       }
     },
     {
@@ -49,17 +57,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/SwiftLint.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "87e9757af2cadc3271901479d344b2bd7701c7e9"
-      }
-    },
-    {
-      "identity" : "keypathvalue",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/p-x9/KeyPathValue.git",
-      "state" : {
-        "revision" : "6aeb41d6c5564ae1f18e8b7a4bc5733d739558e3",
-        "version" : "0.0.1"
+        "branch" : "0.50.0",
+        "revision" : "cdd891a4a29cfd3473737857385f79c972702293"
       }
     },
     {

@@ -10,24 +10,6 @@
       }
     },
     {
-      "identity" : "sourcekitten",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/SourceKitten.git",
-      "state" : {
-        "revision" : "b5f9bb749057dd396e93f97956bef64672bc2a04",
-        "version" : "0.33.0"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser.git",
-      "state" : {
-        "revision" : "9f39744e025c7d377987f30b03770805dcb0bcd1",
-        "version" : "1.1.4"
-      }
-    },
-    {
       "identity" : "editvalueview",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/p-x9/EditValueView.git",
@@ -46,6 +28,23 @@
       }
     },
     {
+      "identity" : "sourcekitten",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/SourceKitten.git",
+      "state" : {
+        "revision" : "a9e6df65d8e31e0fa6e8a05ffe40ecd54a645871"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "9f39744e025c7d377987f30b03770805dcb0bcd1",
+        "version" : "1.1.4"
+      }
+    },
+    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
@@ -59,7 +58,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "26bf2172cc5b7d54f28b10d18e8b5de351b5c4a3"
+        "revision" : "b0b5f8d73ff5ddc0c1d6ececcc094995e8bf57dd"
       }
     },
     {
@@ -67,8 +66,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/SwiftLint.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "87e9757af2cadc3271901479d344b2bd7701c7e9"
+        "branch" : "0.50.0",
+        "revision" : "cdd891a4a29cfd3473737857385f79c972702293"
+      }
+    },
+    {
+      "identity" : "swiftuicolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p-x9/SwiftUIColor.git",
+      "state" : {
+        "revision" : "3696e78e84bc140dca6f865c297e1a3b405a882b",
+        "version" : "0.0.4"
       }
     },
     {
@@ -96,15 +104,6 @@
       "state" : {
         "revision" : "01835dc202670b5bb90d07f3eae41867e9ed29f6",
         "version" : "5.0.1"
-      }
-    },
-    {
-      "identity" : "swiftuicolor",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/p-x9/SwiftUIColor.git",
-      "state" : {
-        "revision" : "3696e78e84bc140dca6f865c297e1a3b405a882b",
-        "version" : "0.0.4"
       }
     }
   ],
