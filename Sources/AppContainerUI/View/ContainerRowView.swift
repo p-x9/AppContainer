@@ -11,15 +11,16 @@ import AppContainer
 
 @available(iOS 13, *)
 struct ContainerRowView: View {
-    
+
     private var container: Container
     private var isActive: Bool
 
+    // swiftlint:disable:next type_contents_order
     init(container: Container, isActive: Bool = false) {
         self.container = container
         self.isActive = isActive
     }
-    
+
     var body: some View {
         HStack(alignment: .center) {
             content
@@ -29,7 +30,7 @@ struct ContainerRowView: View {
             }
         }
     }
-    
+
     var content: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
@@ -39,7 +40,7 @@ struct ContainerRowView: View {
                     .foregroundColor(.secondary)
                 Spacer()
             }
-            
+
             HStack {
                 Text(container.uuid)
                     .font(.caption)
@@ -54,9 +55,9 @@ struct ContainerRowView: View {
 @available(iOS 13, *)
 struct ContainerRowView_Preview: PreviewProvider {
     static var previews: some View {
-        let container: Container =  .init(name: "Default",
-                                          uuid: UUID().uuidString,
-                                          description: "This container is default.\nこんにちは")
+        let container: Container = .init(name: "Default",
+                                         uuid: UUID().uuidString,
+                                         description: "This container is default.\nこんにちは")
         Group {
             ContainerRowView(container: container)
                 .previewLayout(.sizeThatFits)

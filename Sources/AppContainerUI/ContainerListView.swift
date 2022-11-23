@@ -9,25 +9,20 @@
 import SwiftUI
 import AppContainer
 
-extension Container: Identifiable {
-    public var id: UUID {
-        UUID(uuidString: uuid)!
-    }
-}
-
 @available(iOS 14, *)
 public struct ContainerListView: View {
     let appContainer: AppContainer
     let title: String
-    
+
     @State var containers: [Container]
-    
+
+    // swiftlint:disable:next type_contents_order
     public init(appContainer: AppContainer, title: String = "Containers") {
         self.appContainer = appContainer
         self.title = title
         self._containers = .init(initialValue: appContainer.containers)
     }
-    
+
     public var body: some View {
         List {
             ForEach(containers) { container in
@@ -49,6 +44,13 @@ public struct ContainerListView: View {
     }
 }
 
+extension Container: Identifiable {
+    public var id: UUID {
+        // swiftlint:disable:next force_unwrapping
+        UUID(uuidString: uuid)!
+    }
+}
+
 #if DEBUG
 @available(iOS 14, *)
 struct ContainerListView_Preview: PreviewProvider {
@@ -58,11 +60,11 @@ struct ContainerListView_Preview: PreviewProvider {
                   uuid: UUID().uuidString,
                   description: "This container is default.\nこんにちは"),
             .init(name: "Debug1", uuid: UUID().uuidString,
-                 description: "This container is Debug1. \nHello\nHello"),
+                  description: "This container is Debug1. \nHello\nHello"),
             .init(name: "Debug2", uuid: UUID().uuidString),
-            .init(name: "Debug3", uuid: UUID().uuidString),
+            .init(name: "Debug3", uuid: UUID().uuidString)
         ]
-        
+
         NavigationView {
             List {
                 ForEach(containers) { container in

@@ -18,6 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", revision: "0.50.0"),
         .package(url: "https://github.com/p-x9/EditValueView.git", exact: "0.0.2"),
         .package(url: "https://github.com/p-x9/KeyPathValue.git", exact: "0.0.1")
     ],
@@ -26,6 +27,9 @@ let package = Package(
             name: "AppContainer",
             dependencies: [
                 .product(name: "KeyPathValue", package: "KeyPathValue")
+            ],
+            plugins: [
+                .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
             ]
         ),
         .target(
@@ -38,6 +42,6 @@ let package = Package(
         .testTarget(
             name: "AppContainerTests",
             dependencies: ["AppContainer"]
-        ),
+        )
     ]
 )
