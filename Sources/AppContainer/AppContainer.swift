@@ -192,6 +192,38 @@ public class AppContainer {
         try self.clean(container: container)
     }
 
+    /// Clone selected container
+    /// - Parameter container: target container.
+    /// Since only the uuid of the container is considered,
+    /// `cloneContainer(uuid: String, with name: String, description: String? = nil)`method  can be used instead.
+    @discardableResult
+    public func clone(container: Container, with name: String, description: String? = nil) throws -> Container {
+        let newContainer = try createNewContainer(name: name, description: description)
+
+        let src: String
+        // if target container is in active, its contents is located in home.
+        if activeContainer?.uuid == container.uuid {
+            src = homeDirectoryPath
+        } else {
+            src = container.path(homeDirectoryPath)
+        }
+
+        try copyContainerContents(src: src, dst: newContainer.path(homeDirectoryPath))
+
+        return newContainer
+    }
+
+    /// Clone container
+    /// - Parameter uuid: uuid of container that you want to clone.
+    @discardableResult
+    public func cloneContainer(uuid: String, with name: String, description: String? = nil) throws -> Container? {
+        guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
+            return nil
+        }
+
+        return try clone(container: container, with: name, description: description)
+    }
+
     /// Clear all containers and activate the default container
     public func reset() throws {
         try activate(container: .default)
@@ -349,6 +381,32 @@ extension AppContainer {
             try fileManager.createDirectoryIfNotExisted(atPath: destination, withIntermediateDirectories: true)
             try fileManager.removeChildContents(atPath: destination, excludes: directory.excludes)
             try fileManager.moveChildContents(atPath: source, toPath: destination, excludes: directory.excludes)
+        }
+    }
+
+    /// copy container's child contents
+    /// - Parameters:
+    ///   - src: source path.
+    ///   - dst: destination path.
+    private func copyContainerContents(src: String, dst: String) throws {
+        if src == dst {
+            return
+        }
+
+        if groupIdentifier != nil {
+            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames
+            try fileManager.createDirectoryIfNotExisted(atPath: dst, withIntermediateDirectories: true)
+            try fileManager.removeChildContents(atPath: dst, excludes: excludes)
+            try fileManager.copyChildContents(atPath: src, toPath: dst, excludes: excludes)
+        }
+
+        try Container.Directories.allCases.forEach { directory in
+            let source = src + "/" + directory.name
+            let destination = dst + "/" + directory.name
+
+            try fileManager.createDirectoryIfNotExisted(atPath: destination, withIntermediateDirectories: true)
+            try fileManager.removeChildContents(atPath: destination, excludes: directory.excludes)
+            try fileManager.copyChildContents(atPath: source, toPath: destination, excludes: directory.excludes)
         }
     }
 
