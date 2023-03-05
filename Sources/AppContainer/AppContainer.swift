@@ -8,6 +8,8 @@ public class AppContainer {
 
     private let fileManager = FileManager.default
 
+    private let notificationCenter = NotificationCenter.default
+
     /// home directory url
     private lazy var homeDirectoryUrl: URL = {
         URL(fileURLWithPath: NSHomeDirectory())
@@ -101,6 +103,8 @@ public class AppContainer {
             return
         }
 
+        notificationCenter.post(name: Self.containerWillChangeNotification, object: nil)
+
         try exportUserDefaults()
         exportCookies()
 
@@ -119,6 +123,8 @@ public class AppContainer {
         incrementActivatedCount(uuid: container.uuid)
         // update last activated date
         try? updateInfo(of: container, keyValue: .init(\.lastActivatedDate, Date()))
+
+        notificationCenter.post(name: Self.containerDidChangeNotification, object: nil)
     }
 
     /// activate selected container
