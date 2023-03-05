@@ -27,6 +27,9 @@ class ViewController: UIViewController {
     }
     
     var orderedDictionary: OrderedDictionary<String, Any> = .init()
+
+    private let notificationCenter = NotificationCenter.default
+    private var notificationObservations = [Any]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,11 +43,14 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         
         title = appContainer.activeContainer?.name
+
+        registerNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
+        unregisterNotifications()
     }
 
     private func setupViews() {
@@ -270,6 +276,26 @@ extension ViewController: UITableViewDelegate {
             completionHandler(self.deleteItem(at: indexPath.item))
         }
         return .init(actions: [deleteAction])
+    }
+}
+
+extension ViewController {
+    func registerNotifications() {
+        let willChangeObservation = notificationCenter.addObserver(forName: AppContainer.containerWillChangeNotification, object: nil, queue: .current) { _ in
+            print("container will change")
+        }
+
+        let didChangeObservation = notificationCenter.addObserver(forName: AppContainer.containerWillChangeNotification, object: nil, queue: .current) { _ in
+            print("container did change")
+        }
+
+        self.notificationObservations = [willChangeObservation, didChangeObservation]
+    }
+
+    func unregisterNotifications() {
+        notificationObservations.forEach {
+            notificationCenter.removeObserver($0)
+        }
     }
 }
 
