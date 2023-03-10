@@ -37,6 +37,8 @@ class ViewController: UIViewController {
         setupViews()
         setupViewConstraints()
         setupNavigationItems()
+
+        appContainer.delegates.add(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -285,7 +287,7 @@ extension ViewController {
             print("container will change")
         }
 
-        let didChangeObservation = notificationCenter.addObserver(forName: AppContainer.containerWillChangeNotification, object: nil, queue: .current) { _ in
+        let didChangeObservation = notificationCenter.addObserver(forName: AppContainer.containerDidChangeNotification, object: nil, queue: .current) { _ in
             print("container did change")
         }
 
@@ -299,6 +301,15 @@ extension ViewController {
     }
 }
 
+extension ViewController: AppContainerDelegate {
+    func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Container, from fromContainer: Container?) {
+        print(#function, (fromContainer?.name ?? "") + " -> " + (toContainer.name ?? ""))
+    }
+
+    func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?) {
+        print(#function, (fromContainer?.name ?? "") + " -> " + (toContainer.name ?? ""))
+    }
+}
 
 extension ViewController {
     class View: UIView {
