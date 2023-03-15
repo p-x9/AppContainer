@@ -106,6 +106,49 @@ try AppContainer.standard.cleanContainer(uuid: uuid)
 try AppContainer.standard.reset()
 ```
 
+### 通知(Notification)
+コンテナ切り替え時に通知を受け取ることができます。  
+厳密に、切り替え前および切り替え後に行いたい処理を追加する場合は、後述するdelegateを使用してください。
+
+- containerWillChangeNotification
+コンテナ切り替え前
+- containerDidChangeNotification
+コンテナ切り替え後
+### 委譲(Delegate)
+Delegateを使用して、コンテナの切り替え時に、任意の処理を追加することができます。
+以下の順で処置が行われます。
+
+``` swift
+// `activate`メソッドが呼び出される
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+
+func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Container, from fromContainer: Container?) // Delegate(コンテナ切り替え前)
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+// コンテナの切り替え処理(ライブラリ)
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?) // Delegate(コンテナ切り替え後)
+```
+
+このライブラリでは複数のdelegateを設定できるようになっています。 
+以下のように追加します。
+```swift
+AppContainer.standard.delegates.add(self) // selfがAppContainerDelegateに準拠している場合
+```
+弱参照で保持されており、オブジェクトが解放された場合は自動で解除されます。  
+もし、delegateの設定を解除したい場合は以下のように書きます。
+```swift
+AppContainer.standard.delegates.remove(self) // selfがAppContainerDelegateに準拠している場合
+```
+
+### AppContainerUI
+AppContainerを扱うためのUIを提供しています。  
+SwiftUIおよびUIKitに対応しています。
 #### SwiftUI
 ```swift
 import AppContainerUI

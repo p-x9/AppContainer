@@ -79,6 +79,48 @@ Specifically, the DEFAULT container will be enabled and all other AppContainer-r
 try AppContainer.standard.reset()
 ```
 
+### Notification
+You can receive notifications when switching containers.  
+If you want to add additional processing to be done strictly before and after the switch, use delegate as described below.
+
+- containerWillChangeNotification
+Before container switching
+- containerDidChangeNotification
+After container change
+
+### Delegate
+Delegate can be used to add optional processing when switching containers.
+The actions are performed in the following order.
+
+``` swift
+// the `activate` method is called
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+
+func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Container, from fromContainer: Container?) // Delegate(before container switch)
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+// Container switching process (library)
+
+// ↓↓↓↓↓↓↓↓↓↓
+
+func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?
+```
+
+This library allows multiple delegates to be set. 
+Add the following.
+
+```swift
+AppContainer.standard.delegates.add(self) // if self is AppContainerDelegate compliant
+```
+It is held in a weak reference and will be automatically released when the object is freed.  
+If you want to unset the delegate, write the following.
+```swift
+AppContainer.standard.delegates.remove(self) // if self conforms to AppContainerDelegate
+```
+
 ### AppContainerUI
 #### SwiftUI
 ```swift
