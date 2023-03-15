@@ -6,6 +6,8 @@ public class AppContainer {
     /// standard container manager
     public static let standard = AppContainer()
 
+    public var delegates: WeakHashTable<AppContainerDelegate> = .init()
+
     private let fileManager = FileManager.default
 
     private let notificationCenter = NotificationCenter.default
@@ -103,7 +105,12 @@ public class AppContainer {
             return
         }
 
+        let fromContainer = self.activeContainer
+
         notificationCenter.post(name: Self.containerWillChangeNotification, object: nil)
+        delegates.objects.forEach {
+            $0.appContainer(self, willChangeTo: container, from: fromContainer)
+        }
 
         try exportUserDefaults()
         exportCookies()
@@ -125,6 +132,9 @@ public class AppContainer {
         try? updateInfo(of: container, keyValue: .init(\.lastActivatedDate, Date()))
 
         notificationCenter.post(name: Self.containerDidChangeNotification, object: nil)
+        delegates.objects.forEach {
+            $0.appContainer(self, didChangeTo: container, from: fromContainer)
+        }
     }
 
     /// activate selected container
