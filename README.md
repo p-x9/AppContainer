@@ -17,7 +17,7 @@ This is useful when you want to test multiple accounts in a staging application.
 Normally there is one environment (Directory, UserDefaults, Cookies, Cache, ...) for one app.  
 To have multiple environments for debugging or to handle multiple accounts, multiple identical apps must be installed. (with different bundle IDs).  
 In debugging, there may be cases where accounts are repeatedly checked by logging in and logging out.  
-</b>
+</br>
 Therefore, we thought it would be possible to create multiple environments within the same app and switch between them easily.  
 This is why we created this library called `AppContainer`.
 
