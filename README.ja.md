@@ -9,6 +9,13 @@
 [![Github stars](https://img.shields.io/github/stars/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/stargazers)
 [![Github top language](https://img.shields.io/github/languages/top/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/)
 
+## コンセプト
+通常１つのアプリに対して、１つの環境(ディレクトリ, UserDefaults、Cookie, Cache, …)が存在しています。  
+Debugのためや複数のアカウントを扱うために複数の環境を用意するには、複数の同一アプリをインストールする必要があります。(bundle idの異なる)  
+Debugにおいては、アカウントのログインとログアウトを繰り返しての確認が必要となるケースもあるかもしれません。  
+</b>
+そこで、同一アプリ内に複数の環境を作成し、簡単に切り替えることができないかと考えました。  
+それで作成したのが、`AppContainer`というこのライブラリです。
 
 ## デモ
 |  Default  |  Debug1  |

@@ -13,6 +13,14 @@ This is useful when you want to test multiple accounts in a staging application.
 
 > Language Switch: [日本語](https://github.com/p-x9/AppContainer/blob/main/README.ja.md).
 
+## Concept
+Normally there is one environment (Directory, UserDefaults, Cookies, Cache, ...) for one app.  
+To have multiple environments for debugging or to handle multiple accounts, multiple identical apps must be installed. (with different bundle IDs).  
+In debugging, there may be cases where accounts are repeatedly checked by logging in and logging out.  
+</b>
+Therefore, we thought it would be possible to create multiple environments within the same app and switch between them easily.  
+This is why we created this library called `AppContainer`.
+
 ## Demo
 |  Default  |  Debug1  |
 | ---- | ---- |
@@ -106,7 +114,7 @@ func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Contai
 
 // ↓↓↓↓↓↓↓↓↓↓
 
-func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?
+func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?) // Delegate (after container switch)
 ```
 
 This library allows multiple delegates to be set. 
@@ -122,6 +130,8 @@ AppContainer.standard.delegates.remove(self) // if self conforms to AppContainer
 ```
 
 ### AppContainerUI
+Provides UI for using AppContainer.  
+SwiftUI and UIKit are supported.
 #### SwiftUI
 ```swift
 import AppContainerUI
