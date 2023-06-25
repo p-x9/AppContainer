@@ -6,7 +6,7 @@ public class AppContainer {
     /// standard container manager
     public static let standard = AppContainer()
 
-    public var delegates: WeakHashTable<AppContainerDelegate> = .init()
+    public var delegates: WeakHashTable<any AppContainerDelegate> = .init()
 
     /// Files to exclude from movement when switching containers.
     /// For example, if you add "xxx.yy", all folders will exclude the following files named "xxx.yy".
