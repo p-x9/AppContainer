@@ -6,7 +6,7 @@ public class AppContainer {
     /// standard container manager
     public static let standard = AppContainer()
 
-    public var delegates: WeakHashTable<AppContainerDelegate> = .init()
+    public var delegates: WeakHashTable<any AppContainerDelegate> = .init()
 
     private let fileManager = FileManager.default
 

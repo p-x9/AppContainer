@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.8
 
 import PackageDescription
 
@@ -26,6 +26,9 @@ let package = Package(
             name: "AppContainer",
             dependencies: [
                 .product(name: "KeyPathValue", package: "KeyPathValue")
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("ExistentialAny", .when(configuration: .debug))
             ],
             plugins: []
         ),
