@@ -8,6 +8,11 @@ public class AppContainer {
 
     public var delegates: WeakHashTable<AppContainerDelegate> = .init()
 
+    /// Files to exclude from movement when switching containers.
+    /// For example, if you add "xxx.yy", all folders will exclude the following files named "xxx.yy".
+    /// It is also possible to exclude only files named "XXX.yy" under a folder named “FFF" such as "FFF/XXX.yy".
+    public var customExcludeFiles: [String] = []
+
     private let fileManager = FileManager.default
 
     private let notificationCenter = NotificationCenter.default
@@ -194,7 +199,7 @@ public class AppContainer {
 
         try Container.Directories.allCases.forEach { directory in
             let url = container.url(homeDirectoryUrl).appendingPathComponent(directory.name)
-            try self.fileManager.removeChildContents(at: url, excludes: directory.excludes)
+            try self.fileManager.removeChildContents(at: url, excludes: directory.excludes + customExcludeFiles)
         }
     }
 
@@ -384,7 +389,7 @@ extension AppContainer {
         }
 
         if groupIdentifier != nil {
-            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames
+            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames + customExcludeFiles
             try fileManager.createDirectoryIfNotExisted(atPath: dst, withIntermediateDirectories: true)
             try fileManager.removeChildContents(atPath: dst, excludes: excludes)
             try fileManager.moveChildContents(atPath: src, toPath: dst, excludes: excludes)
@@ -394,9 +399,11 @@ extension AppContainer {
             let source = src + "/" + directory.name
             let destination = dst + "/" + directory.name
 
+            let excludes = directory.excludes + customExcludeFiles
+
             try fileManager.createDirectoryIfNotExisted(atPath: destination, withIntermediateDirectories: true)
-            try fileManager.removeChildContents(atPath: destination, excludes: directory.excludes)
-            try fileManager.moveChildContents(atPath: source, toPath: destination, excludes: directory.excludes)
+            try fileManager.removeChildContents(atPath: destination, excludes: excludes)
+            try fileManager.moveChildContents(atPath: source, toPath: destination, excludes: excludes)
         }
     }
 
@@ -410,7 +417,7 @@ extension AppContainer {
         }
 
         if groupIdentifier != nil {
-            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames
+            let excludes = Constants.appGroupExcludeFileNames + Container.Directories.allNames + customExcludeFiles
             try fileManager.createDirectoryIfNotExisted(atPath: dst, withIntermediateDirectories: true)
             try fileManager.removeChildContents(atPath: dst, excludes: excludes)
             try fileManager.copyChildContents(atPath: src, toPath: dst, excludes: excludes)
@@ -420,9 +427,11 @@ extension AppContainer {
             let source = src + "/" + directory.name
             let destination = dst + "/" + directory.name
 
+            let excludes = directory.excludes + customExcludeFiles
+
             try fileManager.createDirectoryIfNotExisted(atPath: destination, withIntermediateDirectories: true)
-            try fileManager.removeChildContents(atPath: destination, excludes: directory.excludes)
-            try fileManager.copyChildContents(atPath: source, toPath: destination, excludes: directory.excludes)
+            try fileManager.removeChildContents(atPath: destination, excludes: excludes)
+            try fileManager.copyChildContents(atPath: source, toPath: destination, excludes: excludes)
         }
     }
 
