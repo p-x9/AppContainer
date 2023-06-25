@@ -14,11 +14,11 @@ This is useful when you want to test multiple accounts in a staging application.
 > Language Switch: [日本語](https://github.com/p-x9/AppContainer/blob/main/README.ja.md).
 
 ## Concept
-Normally there is one environment (Directory, UserDefaults, Cookies, Cache, ...) for one app.  
-To have multiple environments for debugging or to handle multiple accounts, multiple identical apps must be installed. (with different bundle IDs).  
-In debugging, there may be cases where accounts are repeatedly checked by logging in and logging out.  
+Normally there is one environment (Directory, UserDefaults, Cookies, Cache, ...) for one app.
+To have multiple environments for debugging or to handle multiple accounts, multiple identical apps must be installed. (with different bundle IDs).
+In debugging, there may be cases where accounts are repeatedly checked by logging in and logging out.
 </br>
-Therefore, we thought it would be possible to create multiple environments within the same app and switch between them easily.  
+Therefore, we thought it would be possible to create multiple environments within the same app and switch between them easily.
 This is why we created this library called `AppContainer`.
 
 ## Demo
@@ -35,7 +35,7 @@ This is why we created this library called `AppContainer`.
 ```swift
 extension AppContainer {
     static let group = .init(groupIdentifier: "YOUR APP GROUP IDENTIFIER")
-} 
+}
 ```
 ### Methods
 #### Create New Container
@@ -88,7 +88,7 @@ try AppContainer.standard.reset()
 ```
 
 ### Notification
-You can receive notifications when switching containers.  
+You can receive notifications when switching containers.
 If you want to add additional processing to be done strictly before and after the switch, use delegate as described below.
 
 - containerWillChangeNotification
@@ -117,20 +117,41 @@ func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Contai
 func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?) // Delegate (after container switch)
 ```
 
-This library allows multiple delegates to be set. 
+This library allows multiple delegates to be set.
 Add the following.
 
 ```swift
 AppContainer.standard.delegates.add(self) // if self is AppContainerDelegate compliant
 ```
-It is held in a weak reference and will be automatically released when the object is freed.  
+It is held in a weak reference and will be automatically released when the object is freed.
 If you want to unset the delegate, write the following.
 ```swift
 AppContainer.standard.delegates.remove(self) // if self conforms to AppContainerDelegate
 ```
 
+### Set files not to be moved when switching containers
+When switching containers, almost all files except for some system files are saved and restored to the container directory.
+You can set files to be excluded from these moves.
+
+For example, the following is an example of a case where you want to use UserDefault commonly in all containers.
+This file will not be saved or restored when switching containers.
+```swift
+appcontainer.customExcludeFiles = [
+    "Library/Preferences/<Bundle Identifier>.plist"
+]
+```
+
+All file paths that end with the contents of customExcludeFiles will be excluded from the move.
+For example, the following configuration will exclude the file named `XXX.yy` under all directories.
+
+```swift
+appcontainer.customExcludeFiles = [
+    "XXX.yy"
+]
+```
+
 ### AppContainerUI
-Provides UI for using AppContainer.  
+Provides UI for using AppContainer.
 SwiftUI and UIKit are supported.
 #### SwiftUI
 ```swift
