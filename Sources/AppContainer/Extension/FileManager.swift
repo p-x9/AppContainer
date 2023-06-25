@@ -55,6 +55,24 @@ extension FileManager {
         try self.moveItem(atPath: srcPath, toPath: dstPath)
     }
 
+    func removeItemIfExisted(at URL: URL) throws {
+        guard self.fileExists(atPath: URL.path) else {
+            return
+        }
+
+        try self.removeItem(at: URL)
+    }
+
+    func removeItemIfExisted(atPath path: String) throws {
+        guard self.fileExists(atPath: path) else {
+            return
+        }
+
+        try self.removeItem(atPath: path)
+    }
+}
+
+extension FileManager {
     func moveChildContents(at srcURL: URL, to dstURL: URL, excludes: [String] = []) throws {
         guard self.fileExists(atPath: srcURL.path) else {
             return
@@ -69,26 +87,22 @@ extension FileManager {
             let src = srcURL.appendingPathComponent($0)
             let dst = dstURL.appendingPathComponent($0)
 
-            try self.moveItem(at: src, to: dst)
+            if !src.shouldExclude(excludes: excludes) {
+                if isDirectory(src) {
+                    try createDirectoryIfNotExisted(at: dst, withIntermediateDirectories: true)
+                    try moveChildContents(at: src, to: dst, excludes: excludes)
+                } else {
+                    try self.moveItem(at: src, to: dst)
+                }
+            }
         }
     }
 
     func moveChildContents(atPath srcPath: String, toPath dstPath: String, excludes: [String] = []) throws {
-        guard self.fileExists(atPath: srcPath) else {
-            return
-        }
+        let srcURL = URL(fileURLWithPath: srcPath)
+        let dstURL = URL(fileURLWithPath: dstPath)
 
-        let contents = try self.contentsOfDirectory(atPath: srcPath)
-            .filter {
-                $0 != Constants.containerFolderName && !excludes.contains($0)
-            }
-
-        try contents.forEach {
-            let src = srcPath + "/" + $0
-            let dst = dstPath + "/" + $0
-
-            try self.moveItem(atPath: src, toPath: dst)
-        }
+        try self.moveChildContents(at: srcURL, to: dstURL, excludes: excludes)
     }
 
     func copyChildContents(at srcURL: URL, to dstURL: URL, excludes: [String] = []) throws {
@@ -105,29 +119,25 @@ extension FileManager {
             let src = srcURL.appendingPathComponent($0)
             let dst = dstURL.appendingPathComponent($0)
 
-            try self.copyItem(at: src, to: dst)
+            if !src.shouldExclude(excludes: excludes) {
+                if isDirectory(src) {
+                    try self.createDirectoryIfNotExisted(at: dstURL, withIntermediateDirectories: true)
+                    try self.copyChildContents(at: srcURL, to: dstURL, excludes: excludes)
+                } else {
+                    try self.copyItem(at: src, to: dst)
+                }
+            }
         }
     }
 
     func copyChildContents(atPath srcPath: String, toPath dstPath: String, excludes: [String] = []) throws {
-        guard self.fileExists(atPath: srcPath) else {
-            return
-        }
+        let srcURL = URL(fileURLWithPath: srcPath)
+        let dstURL = URL(fileURLWithPath: dstPath)
 
-        let contents = try self.contentsOfDirectory(atPath: srcPath)
-            .filter {
-                $0 != Constants.containerFolderName && !excludes.contains($0)
-            }
-
-        try contents.forEach {
-            let src = srcPath + "/" + $0
-            let dst = dstPath + "/" + $0
-
-            try self.copyItem(atPath: src, toPath: dst)
-        }
+        try self.copyChildContents(at: srcURL, to: dstURL, excludes: excludes)
     }
 
-    func removeChildContents(at URL: URL, excludes: [String] = []) throws {
+    func removeChildContents(at URL: URL, excludes: [String] = [], level: Int = 0) throws {
         guard self.fileExists(atPath: URL.path) else {
             return
         }
@@ -137,39 +147,62 @@ extension FileManager {
                 $0 != Constants.containerFolderName && !excludes.contains($0)
             }
 
+        let contentName = URL.lastPathComponent
+        if contents.isEmpty,
+           contentName != Constants.containerFolderName,
+           !URL.shouldExclude(excludes: excludes),
+           level > 0 {
+            try self.removeItem(at: URL)
+        }
+
         try contents.forEach {
-            try self.removeItem(at: URL.appendingPathComponent($0))
+            let URL = URL.appendingPathComponent($0)
+
+            if !URL.shouldExclude(excludes: excludes) {
+                if isDirectory(URL) {
+                    try self.removeChildContents(at: URL, excludes: excludes, level: level + 1)
+                } else {
+                    try self.removeItem(at: URL)
+                }
+            }
         }
     }
 
     func removeChildContents(atPath path: String, excludes: [String] = []) throws {
-        guard self.fileExists(atPath: path) else {
-            return
-        }
+        let URL = URL(fileURLWithPath: path)
+        try self.removeChildContents(at: URL, excludes: excludes)
+    }
+}
 
-        let contents = try self.contentsOfDirectory(atPath: path)
-            .filter {
-                $0 != Constants.containerFolderName && !excludes.contains($0)
+extension FileManager {
+    func isDirectory(_ path: String) -> Bool {
+        var isDir: ObjCBool = false
+        if fileExists(atPath: path, isDirectory: &isDir) {
+            if isDir.boolValue {
+                return true
             }
-
-        try contents.forEach {
-            try self.removeItem(atPath: path + "/" + $0)
         }
+        return false
     }
 
-    func removeItemIfExisted(at URL: URL) throws {
-        guard self.fileExists(atPath: URL.path) else {
-            return
+    func isDirectory(_ url: URL) -> Bool {
+        var isDir: ObjCBool = false
+        if fileExists(atPath: url.path, isDirectory: &isDir) {
+            if isDir.boolValue {
+                return true
+            }
         }
-
-        try self.removeItem(at: URL)
+        return false
     }
+}
 
-    func removeItemIfExisted(atPath path: String) throws {
-        guard self.fileExists(atPath: path) else {
-            return
+extension URL {
+    func shouldExclude(excludes: [String]) -> Bool {
+        for exclude in excludes {
+            if path.hasSuffix(exclude) {
+                return true
+            }
         }
-
-        try self.removeItem(atPath: path)
+        return false
     }
 }
