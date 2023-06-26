@@ -10,11 +10,11 @@
 [![Github top language](https://img.shields.io/github/languages/top/p-x9/AppContainer)](https://github.com/p-x9/AppContainer/)
 
 ## コンセプト
-通常１つのアプリに対して、１つの環境(ディレクトリ, UserDefaults、Cookie, Cache, …)が存在しています。  
-Debugのためや複数のアカウントを扱うために複数の環境を用意するには、複数の同一アプリをインストールする必要があります。(bundle idの異なる)  
-Debugにおいては、アカウントのログインとログアウトを繰り返しての確認が必要となるケースもあるかもしれません。  
+通常１つのアプリに対して、１つの環境(ディレクトリ, UserDefaults、Cookie, Cache, …)が存在しています。
+Debugのためや複数のアカウントを扱うために複数の環境を用意するには、複数の同一アプリをインストールする必要があります。(bundle idの異なる)
+Debugにおいては、アカウントのログインとログアウトを繰り返しての確認が必要となるケースもあるかもしれません。
 </br>
-そこで、同一アプリ内に複数の環境を作成し、簡単に切り替えることができないかと考えました。  
+そこで、同一アプリ内に複数の環境を作成し、簡単に切り替えることができないかと考えました。
 それで作成したのが、`AppContainer`というこのライブラリです。
 
 ## デモ
@@ -47,7 +47,7 @@ Library/Cookies
 `UserDefaults`やその上位実装である`CFPreferences`はsetされたデータを、別プロセスである`cfprefsd`というものによってキャッシングをおこなっています。
 これらはsetされたデータをplistファイルに保存し永続化をおこなっていますが、上記のキャッシングにより、plist内のデータと`UserDefaults`/`CFPreferences`から取得できるデータは常に等しくなるわけではありません。（非同期で読み書きが行われる。）
 これはアプリの再起動を行っても同期されるとは限りません。
-よってコンテナの有効化処理を行う処理で、同期を行う処理をおこなっています。 
+よってコンテナの有効化処理を行う処理で、同期を行う処理をおこなっています。
 
 ### HTTPCookieStorage
 HTTPCookieStorageもキャッシングされており、非同期でファイル(Library/Cookies)への書き込みが行われています。
@@ -114,7 +114,7 @@ try AppContainer.standard.reset()
 ```
 
 ### 通知(Notification)
-コンテナ切り替え時に通知を受け取ることができます。  
+コンテナ切り替え時に通知を受け取ることができます。
 厳密に、切り替え前および切り替え後に行いたい処理を追加する場合は、後述するdelegateを使用してください。
 
 - containerWillChangeNotification
@@ -142,19 +142,39 @@ func appContainer(_ appContainer: AppContainer, willChangeTo toContainer: Contai
 func appContainer(_ appContainer: AppContainer, didChangeTo toContainer: Container, from fromContainer: Container?) // Delegate(コンテナ切り替え後)
 ```
 
-このライブラリでは複数のdelegateを設定できるようになっています。 
+このライブラリでは複数のdelegateを設定できるようになっています。
 以下のように追加します。
 ```swift
 AppContainer.standard.delegates.add(self) // selfがAppContainerDelegateに準拠している場合
 ```
-弱参照で保持されており、オブジェクトが解放された場合は自動で解除されます。  
+弱参照で保持されており、オブジェクトが解放された場合は自動で解除されます。
 もし、delegateの設定を解除したい場合は以下のように書きます。
 ```swift
 AppContainer.standard.delegates.remove(self) // selfがAppContainerDelegateに準拠している場合
 ```
 
+### コンテナ切り替え時に移動しないファイルを設定する
+コンテナ切り替え時には、一部のシステムファイルを除くほぼ全てのファイルが、コンテナディレクトリへ退避そして復元されます。
+これらの移動対象から除外するファイルを設定することができます。
+
+例えば、以下はUserDefaultを全てのコンテナで共通で利用したいときの例です。
+このファイルは、コンテナ切り替え時に、退避も復元もされません。
+```swift
+appcontainer.customExcludeFiles = [
+    "Library/Preferences/<Bundle Identifier>.plist"
+]
+```
+
+ファイルパスのうち、最後がcustomExcludeFilesの内容に一致するものが全て移動対象から除外されます。
+例えば、以下のように設定した場合、全てのディレクトリ配下の`XXX.yy`というファイルが移動対象から除外されます。
+```swift
+appcontainer.customExcludeFiles = [
+    "XXX.yy"
+]
+```
+
 ### AppContainerUI
-AppContainerを扱うためのUIを提供しています。  
+AppContainerを扱うためのUIを提供しています。
 SwiftUIおよびUIKitに対応しています。
 #### SwiftUI
 ```swift
