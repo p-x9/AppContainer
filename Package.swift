@@ -18,7 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/p-x9/EditValueView.git", .upToNextMinor(from: "0.0.7")),
+        .package(url: "https://github.com/p-x9/EditValueView.git", .upToNextMinor(from: "0.4.0")),
         .package(url: "https://github.com/p-x9/KeyPathValue.git", .upToNextMinor(from: "0.0.1"))
     ],
     targets: [

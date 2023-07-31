@@ -44,7 +44,7 @@ public struct ContainerInfoView: View {
         Section(header: Text("Informations")) {
             WritableKeyValueRowView(key: "Name", value: container.name, isEditable: isEditable) {
                 EditValueView(container, key: "name", keyPath: \.name)
-                    .onUpdate {_, value in
+                    .onUpdate { value in
                         save(keyPath: \.name, value: value)
                     }
             }
@@ -54,7 +54,7 @@ public struct ContainerInfoView: View {
 
             WritableKeyValueRowView(key: "Description", value: container.description, isEditable: isEditable) {
                 EditValueView(container, key: "description", keyPath: \.description)
-                    .onUpdate {_, value in
+                    .onUpdate { value in
                         save(keyPath: \.description, value: value)
                     }
             }
@@ -63,14 +63,14 @@ public struct ContainerInfoView: View {
 
             WritableKeyValueRowView(key: "Last Activated Date", value: container.lastActivatedDate, isEditable: isEditable) {
                 EditValueView(container, key: "lastActivatedDate", keyPath: \.lastActivatedDate)
-                    .onUpdate { _, value in
+                    .onUpdate { value in
                         save(keyPath: \.lastActivatedDate, value: value)
                     }
             }
 
             WritableKeyValueRowView(key: "Activated Count", value: container.activatedCount, isEditable: isEditable) {
                 EditValueView(container, key: "activatedCount", keyPath: \.activatedCount)
-                    .onUpdate {_, value in
+                    .onUpdate { value in
                         save(keyPath: \.activatedCount, value: value)
                     }
             }
