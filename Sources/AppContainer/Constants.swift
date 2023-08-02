@@ -11,7 +11,7 @@ import Foundation
 enum Constants {
     static let containerFolderName = ".__app_container__"
 
-    static let appContainerSettingsPlistName = "settings.plist"
+    static let appContainerSettingsPlistName = "com.p-x9.AppContainer.settings.plist"
 
     static let containerInfoPlistName = "container.plist"
 
