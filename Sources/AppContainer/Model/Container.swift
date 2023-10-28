@@ -8,24 +8,32 @@
 
 import Foundation
 
+/// Model of container
+///
+/// Represents container information such as name, description, UUID, etc.
 public struct Container: Codable, Equatable {
-    /// container name
+    /// Container name
     public var name: String?
-    /// container unique id
+    /// Container unique id
     public let uuid: String
 
-    /// description
+    /// Container description
     public var description: String?
 
-    /// created date
+    /// Container created date
     public let createdAt: Date?
 
-    /// last activated date
+    /// Last activated date
     public var lastActivatedDate: Date?
 
-    /// activated count
+    /// Container activated count
     public var activatedCount: Int? = 0
-
+    
+    /// Default initializer
+    /// - Parameters:
+    ///   - name: container name
+    ///   - uuid: container unique identifier
+    ///   - description: container description
     public init(name: String?, uuid: String, description: String? = nil) {
         self.name = name
         self.uuid = uuid
@@ -35,23 +43,26 @@ public struct Container: Codable, Equatable {
 }
 
 extension Container {
-    /// check if default self is container.
+    /// A boolean value that indicates this container is default
+    ///
+    /// UUID of default container is `00000000-0000-0000-0000-000000000000`
     public var isDefault: Bool {
         uuid == UUID.zero.uuidString
     }
 
-    // container relative path
+    /// Relative path where container is stored.
+    /// Based on the app's home directory.
     private var relativePath: String {
         "Library/" + Constants.containerFolderName + "/" + uuid
     }
 
-    /// Container Directory url
+    /// Absolute URL where container is stored.
     /// - Parameter homeUrl: home directory url.
     public func url(_ homeUrl: URL) -> URL {
         homeUrl.appendingPathComponent(relativePath)
     }
 
-    /// Container Directory path
+    /// Absolute path where container is stored.
     /// - Parameter homePath: home directory path.
     public func path(_ homePath: String) -> String {
         homePath + "/" + relativePath
@@ -59,7 +70,9 @@ extension Container {
 }
 
 extension Container {
-    /// default ccontainer
+    /// Default container
+    ///
+    /// The data of the app that existed before ``AppContainer`` is applied to this Default container.
     static let `default`: Container = {
         .init(name: "DEFAULT", uuid: UUID.zero.uuidString)
     }()

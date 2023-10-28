@@ -1,14 +1,57 @@
 import Foundation
 import KeyPathValue
 
-/// class for  management container
+/// Class for  management containers
+///
+/// It manages multiple containers and is responsible for activating and updating information.
+///
+/// Usually, use the instance obtained with ``standard``.
+/// ```swift
+///  let appContainer = AppContainer.standard
+/// ```
+/// When using appGroup, initialize it using ``init(groupIdentifier:)`` with its ID.
+/// ```swift
+///  let appContainer = AppContainer(groupIdentifier: "group.com.xxxx.yyyyy")
+/// ```
+///
+/// A list of currently existing containers can be obtained as follows
+/// ```swift
+/// let containers = appContainer.containers
+/// ```
+///
+/// #### Add New Container
+/// To add a container, write
+/// ```swift
+/// let newContainer = try appContainer.createNewContainer(
+///     name: "NAME",
+///     description: "DESCRIPTION"
+/// )
+/// ```
+///
+/// #### Activate Container
+/// ```swift
+/// try appContainer.activate(container: newContainer)
+/// ```
+///
 public class AppContainer {
-    /// standard container manager
+    /// Standard container manager
     public static let standard = AppContainer()
-
+    
+    /// Delegate list of ``AppContainer``
+    ///
+    /// ``WeakHashTable`` is used to hold multiple objects by weak reference.
+    /// Add a delegate as follows
+    /// ```swift
+    ///  appContainer.delegates.add(self)
+    /// ```
+    /// Remove a delegate as follows
+    /// ```swift
+    ///  appContainer.delegates.remove(self)
+    /// ```
     public var delegates: WeakHashTable<any AppContainerDelegate> = .init()
 
     /// Files to exclude from movement when switching containers.
+    ///
     /// For example, if you add "xxx.yy", all folders will exclude the following files named "xxx.yy".
     /// It is also possible to exclude only files named "XXX.yy" under a folder named “FFF" such as "FFF/XXX.yy".
     public var customExcludeFiles: [String] = []
@@ -17,28 +60,28 @@ public class AppContainer {
 
     private let notificationCenter = NotificationCenter.default
 
-    /// home directory url
+    /// Home directory url
     private lazy var homeDirectoryUrl: URL = {
         URL(fileURLWithPath: NSHomeDirectory())
     }()
 
-    /// home directory path
+    /// Home directory path
     private var homeDirectoryPath: String {
         homeDirectoryUrl.path
     }
 
-    /// url of app container stashed
+    /// URL of app container stashed
     /// ~/Library/.__app_container__
     private lazy var containersUrl: URL = {
         homeDirectoryUrl.appendingPathComponent("Library").appendingPathComponent(Constants.containerFolderName)
     }()
 
-    /// app container settings plist path
+    /// App container settings plist path
     private lazy var settingsUrl: URL = {
         containersUrl.appendingPathComponent(Constants.appContainerSettingsPlistName)
     }()
 
-    /// app container settings
+    /// App container settings
     /// if update params, automatically update plist file
     private lazy var settings: AppContainerSettings = {
         loadAppContainerSettings() ?? .init(currentContainerUUID: UUID.zero.uuidString)
@@ -56,7 +99,7 @@ public class AppContainer {
         _containers.first(where: { $0.uuid == settings.currentContainerUUID })
     }
 
-    /// container list
+    /// List of containers
     public var containers: [Container] {
         _containers
     }
@@ -93,7 +136,7 @@ public class AppContainer {
         try? createDefaultContainerIfNeeded()
     }
 
-    /// create new app container
+    /// Create new app container
     /// - Parameter name: container name
     /// - Returns: created container info
     @discardableResult
@@ -103,8 +146,11 @@ public class AppContainer {
                                isDefault: false)
     }
 
-    /// activate selected container
-    /// - Parameter container: selected container. Since only the uuid of the container is considered, `activateContainer(uuid: String)`method  can be used instead.
+    /// Activate selected container.
+    ///
+    /// Since only the uuid of the container is considered, ``activateContainer(uuid:)``method  can be used instead.
+    ///
+    /// - Parameter container: selected container.
     public func activate(container: Container) throws {
         if self.activeContainer?.uuid == container.uuid {
             return
@@ -142,7 +188,7 @@ public class AppContainer {
         }
     }
 
-    /// activate selected container
+    /// Activate selected container
     /// - Parameter uuid: container's unique id.
     public func activateContainer(uuid: String) throws {
         guard let container = self.containers.first(where: { $0.uuid == uuid }) else {
@@ -164,7 +210,10 @@ public class AppContainer {
 
     /// Delete Selected container.
     /// If an attempt is made to delete a container currently in use, make the default container active
-    /// - Parameter container: container that you want to delete. Since only the uuid of the container is considered, `deleteContainer(uuid: String)`method  can be used instead.
+    ///
+    /// Since only the uuid of the container is considered, ``deleteContainer(uuid:)``method  can be used instead.
+    ///
+    /// - Parameter container: container that you want to delete.
     public func delete(container: Container) throws {
         guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == container.uuid }),
               fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
@@ -191,7 +240,10 @@ public class AppContainer {
     }
 
     /// Clear contents in selected container
-    /// - Parameter container: target container.  Since only the uuid of the container is considered, `cleanContainer(uuid: String)`method  can be used instead.
+    ///
+    /// Since only the uuid of the container is considered, ``cleanContainer(uuid:)``method  can be used instead.
+    ///
+    /// - Parameter container: target container.
     public func clean(container: Container) throws {
         guard fileManager.fileExists(atPath: container.path(homeDirectoryPath)) else {
             throw AppContainerError.containerDirectoryNotFound
@@ -214,9 +266,11 @@ public class AppContainer {
     }
 
     /// Clone selected container
-    /// - Parameter container: target container.
+    ///
     /// Since only the uuid of the container is considered,
-    /// `cloneContainer(uuid: String, with name: String, description: String? = nil)`method  can be used instead.
+    /// ``cloneContainer(uuid:with:description:)``method  can be used instead.
+    ///
+    /// - Parameter container: target container.
     @discardableResult
     public func clone(container: Container, with name: String, description: String? = nil) throws -> Container {
         let newContainer = try createNewContainer(name: name, description: description)
@@ -253,8 +307,11 @@ public class AppContainer {
     }
 
     /// Update container informations
+    ///
+    /// Since only the uuid of the container is considered, ``updateContainerInfo(uuid:keyValue:)``method  can be used instead.
+    ///
     /// - Parameters:
-    ///   - container: target container. Since only the uuid of the container is considered, `updateContainerInfo(uuid: String, keyValue: WritableKeyPathWithValue<Container>)`method  can be used instead.
+    ///   - container: target container.
     ///   - keyValue: update key and value
     public func updateInfo(of container: Container, keyValue: WritableKeyPathWithValue<Container>) throws {
         try updateContainerInfo(uuid: container.uuid, keyValue: keyValue)
@@ -379,7 +436,7 @@ extension AppContainer {
         return containers
     }
 
-    /// move container's child contents
+    /// Move container's child contents
     /// - Parameters:
     ///   - src: source path.
     ///   - dst: destination path.
@@ -407,7 +464,7 @@ extension AppContainer {
         }
     }
 
-    /// copy container's child contents
+    /// Copy container's child contents
     /// - Parameters:
     ///   - src: source path.
     ///   - dst: destination path.
@@ -444,7 +501,7 @@ extension AppContainer {
         }
     }
 
-    /// increment container  activated count
+    /// Increment container  activated count
     /// - Parameter uuid: target container uuid
     private func incrementActivatedCount(uuid: String) {
         guard let matchedIndex = _containers.firstIndex(where: { $0.uuid == uuid }) else {
@@ -459,6 +516,7 @@ extension AppContainer {
 
 // MARK: - UserDefaults
 extension AppContainer {
+    /// Reflect the contents of UserDefaults in the plist in the cache.
     private func syncUserDefaults() throws {
         let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
         let suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
@@ -512,7 +570,8 @@ extension AppContainer {
             CFPreferencesSetAppValue(key as CFString, value as CFPropertyList, applicationID)
         }
     }
-
+    
+    /// Reflect the contents of the UserDefaults cache in the plist file.
     private func exportUserDefaults() throws {
         let preferencesUrl = homeDirectoryUrl.appendingPathComponent("Library/Preferences")
         var suites = try fileManager.contentsOfDirectory(atPath: preferencesUrl.path)
@@ -556,6 +615,7 @@ extension AppContainer {
 }
 
 extension AppContainer {
+    /// Reflects the contents of HTTPCookie's cache in the file.
     private func exportCookies() {
         let cookieStorage: HTTPCookieStorage
         if let groupIdentifier = groupIdentifier {
