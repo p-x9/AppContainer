@@ -27,11 +27,11 @@ We created this library called AppContainer.
 
 #### AppGroup
 
-    ```swift
-    extension AppContainer {
-        static let group = .init(groupIdentifier: "YOUR APP GROUP IDENTIFIER")
-    }
-    ```
+```swift
+extension AppContainer {
+    static let group = .init(groupIdentifier: "YOUR APP GROUP IDENTIFIER")
+}
+```
 
 #### Methods
 
