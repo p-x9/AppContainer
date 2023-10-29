@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -36,6 +36,7 @@ let package = Package(
             name: "AppContainerUI",
             dependencies: [
                 "AppContainer",
+                .product(name: "KeyPathValue", package: "KeyPathValue"),
                 .product(name: "EditValueView", package: "EditValueView")
             ]
         ),

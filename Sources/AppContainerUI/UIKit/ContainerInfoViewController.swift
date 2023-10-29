@@ -11,12 +11,19 @@ import UIKit
 import SwiftUI
 import AppContainer
 
+/// View to display container information
 @available(iOS 14, *)
 public class ContainerInfoViewController: UIViewController {
 
     public let appContainer: AppContainer?
     private let container: Container // FIXME:uuid
 
+    /// Default initializer
+    ///
+    /// The `appContainer` may be omitted, but if it is nil, each piece of information becomes uneditable.
+    /// - Parameters:
+    ///   - appContainer: instance of ``AppContainer``.
+    ///   - container: target container
     public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
         self.container = container

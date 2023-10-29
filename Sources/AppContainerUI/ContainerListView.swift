@@ -5,18 +5,23 @@
 //  Created by p-x9 on 2022/10/15.
 //  
 //
+//  swiftlint:disable:next type_contents_order
 
 import SwiftUI
 import AppContainer
 
+/// View to display list of existing containers
 @available(iOS 14, *)
 public struct ContainerListView: View {
     let appContainer: AppContainer
     let title: String
 
     @State var containers: [Container]
-
-    // swiftlint:disable:next type_contents_order
+    
+    /// Default initializer
+    /// - Parameters:
+    ///   - appContainer: instance of ``AppContainer``.
+    ///   - title: navigation title
     public init(appContainer: AppContainer, title: String = "Containers") {
         self.appContainer = appContainer
         self.title = title
