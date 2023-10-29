@@ -5,11 +5,14 @@
 //  Created by p-x9 on 2022/10/15.
 //  
 //
+//  swiftlint:disable:next type_contents_order
 
 import SwiftUI
 import AppContainer
 import EditValueView
 
+
+/// View to display container information
 @available(iOS 14, *)
 public struct ContainerInfoView: View {
 
@@ -19,8 +22,13 @@ public struct ContainerInfoView: View {
     }
 
     @State private var container: Container
-
-    // swiftlint:disable:next type_contents_order
+    
+    /// Default initializer
+    ///
+    /// The `appContainer` may be omitted, but if it is nil, each piece of information becomes uneditable.
+    /// - Parameters:
+    ///   - appContainer: instance of ``AppContainer``.
+    ///   - container: target container
     public init(appContainer: AppContainer?, container: Container) {
         self.appContainer = appContainer
         self._container = .init(initialValue: container)

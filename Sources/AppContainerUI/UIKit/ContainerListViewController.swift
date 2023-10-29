@@ -11,11 +11,16 @@ import UIKit
 import SwiftUI
 import AppContainer
 
+/// View to display list of existing containers
 @available(iOS 14, *)
 public class ContainerListViewController: UIViewController {
 
+    /// Target appContainer
     public let appContainer: AppContainer
 
+    /// Default initializer
+    /// - Parameters:
+    ///   - appContainer: instance of ``AppContainer``.
     public init(appContainer: AppContainer) {
         self.appContainer = appContainer
 
